@@ -25,10 +25,10 @@ const factoryImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465
 const statIcons = [<Clock className="w-6 h-6 md:w-7 md:h-7" />, <Users className="w-6 h-6 md:w-7 md:h-7" />, <Globe className="w-6 h-6 md:w-7 md:h-7" />, <Award className="w-6 h-6 md:w-7 md:h-7" />];
 
 const defaultAdvantages = [
-  { title: "严格质量管控", desc: "通过ISO 9001:2015质量管理体系认证，全程追溯每一批次铸件质量。" },
-  { title: "先进生产设备", desc: "引进国内外先进铸造设备，自动化生产线确保产品一致性与精度。" },
-  { title: "快速交货能力", desc: "成熟的供应链管理体系，标准件3-7天，定制件15-30天交货。" },
-  { title: "全球出口经验", desc: "产品畅销欧美、东南亚30余个国家和地区，熟悉国际贸易规则。" },
+  { title: "Strict Quality Control", desc: "ISO 9001:2015 certified quality management system with full batch traceability for every casting." },
+  { title: "Advanced Equipment", desc: "State-of-the-art imported casting equipment and automated production lines ensuring consistency and precision." },
+  { title: "Fast Delivery", desc: "Mature supply chain management — standard parts in 3-7 days, custom parts in 15-30 days." },
+  { title: "Global Export Experience", desc: "Products sold to over 30 countries across Europe, Americas, and Southeast Asia with full international trade compliance." },
 ];
 const advIcons = [
   <Shield className="w-7 h-7" />,
@@ -37,7 +37,7 @@ const advIcons = [
   <Globe className="w-7 h-7" />,
 ];
 
-const defaultCerts = ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
+const defaultCerts = ["ISO 9001:2015", "CE", "SGS", "BV", "TÜV"];
 
 export function HomePage() {
   const { t } = useTranslation();
@@ -164,17 +164,22 @@ export function HomePage() {
               {cfgT("about_desc2") || t("home.about_desc2")}
             </p>
             <ul className="space-y-2 mb-6">
-              {[
-                t("home.check_1"),
-                t("home.check_2"),
-                t("home.check_3"),
-                t("home.check_4"),
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#f97316] shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
+              {(() => {
+                const raw = cfgT("checklist");
+                const fallback = [
+                  "ISO 9001:2015 Quality Management System Certified",
+                  "Complete casting, machining and heat treatment production lines",
+                  "Professional R&D team for customized design services",
+                  "Strict factory inspection ensuring 100% qualification rate",
+                ];
+                const items = raw ? JSON.parse(raw) : fallback;
+                return items.map((item: string, i: number) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#f97316] shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ));
+              })()}
             </ul>
             <Link to="/about" className="inline-flex items-center gap-2 text-[#f97316] font-semibold hover:gap-3 transition-all text-sm sm:text-base">
               {t("home.learn_more")} <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -205,7 +210,7 @@ export function HomePage() {
                 <div className="relative h-44 sm:h-48 overflow-hidden">
                   <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=400"} alt={en(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-4 text-2xl">{product.tag === "热销" ? "🔥" : product.tag === "新品" ? "✨" : "⚙️"}</div>
+                  <div className="absolute bottom-3 left-4 text-2xl">{product.tag === "Hot" ? "🔥" : product.tag === "New" ? "✨" : "⚙️"}</div>
                 </div>
                 <div className="p-4 sm:p-5">
                   <h3 className="text-[#1a2744] font-bold mb-1.5 sm:mb-2">{en(product)}</h3>
@@ -240,8 +245,8 @@ export function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-3xl mx-auto">
             {[
               { v: cfg.factory_area || "50,000㎡", l: t("home.factory_area_label") },
-              { v: cfg.factory_lines || "5条", l: t("home.factory_lines_label") },
-              { v: cfg.factory_capacity || "50,000吨", l: t("home.factory_capacity_label") },
+              { v: cfg.factory_lines || "5 Lines", l: t("home.factory_lines_label") },
+              { v: cfg.factory_capacity || "50,000 Tons", l: t("home.factory_capacity_label") },
               { v: cfg.factory_staff || "200+", l: t("home.factory_staff_label") },
             ].map((item) => (
               <div key={item.l} className="bg-white/10 backdrop-blur rounded-lg p-3 sm:p-4 border border-white/20">

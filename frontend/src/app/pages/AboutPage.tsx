@@ -8,28 +8,28 @@ const heroImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465?cr
 const teamImg = "https://images.unsplash.com/photo-1748640857973-93524ef0fe7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVjaXNpb24lMjBlbmdpbmVlcmluZyUyMHdvcmtzaG9wJTIwQ05DJTIwbWFjaGluaW5nfGVufDF8fHx8MTc3NzQ3MTU2MHww&ixlib=rb-4.1.0&q=80&w=1080";
 
 const defaultMilestones = [
-  { year: "2004", title: "公司成立", desc: "上海铸造有限公司在上海奉贤区正式成立，首批员工50人。" },
-  { year: "2007", title: "首次通过ISO认证", desc: "取得ISO 9001质量管理体系认证，质量管理走向规范化。" },
-  { year: "2010", title: "产能突破10,000吨", desc: "新增生产线，年产能突破10,000吨，开始出口东南亚市场。" },
-  { year: "2015", title: "欧美市场拓展", desc: "产品进入欧洲、北美市场，出口额占总营收40%以上。" },
-  { year: "2019", title: "智能化升级", desc: "引进智能铸造生产线，自动化率达到75%，效率提升显著。" },
-  { year: "2024", title: "20周年腾飞", desc: "年产能达50,000吨，员工超500人，服务全球30+国家客户。" },
+  { year: "2004", title: "Company Founded", desc: "SHD Casting officially established in Fengxian District, Shanghai, with an initial team of 50 employees." },
+  { year: "2007", title: "ISO Certification", desc: "Obtained ISO 9001 quality management system certification, marking a new era of standardized quality management." },
+  { year: "2010", title: "Capacity Exceeded 10,000 Tons", desc: "Added new production lines. Annual capacity exceeded 10,000 tons. Began exporting to Southeast Asian markets." },
+  { year: "2015", title: "European & American Markets", desc: "Products entered European and North American markets. Export revenue exceeded 40% of total revenue." },
+  { year: "2019", title: "Smart Manufacturing Upgrade", desc: "Introduced intelligent casting production lines. Automation rate reached 75% with significantly improved efficiency." },
+  { year: "2024", title: "20th Anniversary", desc: "Annual capacity reached 50,000 tons with 500+ employees, serving customers in over 30 countries worldwide." },
 ];
 
 const defaultTeam = [
-  { name: "张建国", title: "董事长 & 总经理", exp: "30年铸造行业经验" },
-  { name: "李明华", title: "技术总监", exp: "高级工程师，发明专利12项" },
-  { name: "王秀芳", title: "质量总监", exp: "ISO认证内审员，从业25年" },
-  { name: "陈志远", title: "销售总监", exp: "海外市场拓展专家" },
+  { name: "Zhang Jianguo", title: "Chairman & General Manager", exp: "30 years of casting industry experience" },
+  { name: "Li Minghua", title: "Technical Director", exp: "Senior engineer with 12 invention patents" },
+  { name: "Wang Xiufang", title: "Quality Director", exp: "ISO certified internal auditor, 25 years of experience" },
+  { name: "Chen Zhiyuan", title: "Sales Director", exp: "Overseas market expansion expert" },
 ];
 
 const defaultCerts = [
-  { name: "ISO 9001:2015", desc: "质量管理体系认证", icon: "🏅" },
-  { name: "CE认证", desc: "欧洲产品合规认证", icon: "🇪🇺" },
-  { name: "SGS检验", desc: "全球领先检测机构认证", icon: "✅" },
-  { name: "BV检验", desc: "法国必维国际检验认证", icon: "🔍" },
-  { name: "TÜV南德认证", desc: "德国技术监督协会认证", icon: "🇩🇪" },
-  { name: "高新技术企业", desc: "国家高新技术企业认定", icon: "⭐" },
+  { name: "ISO 9001:2015", desc: "Quality Management System Certification", icon: "🏅" },
+  { name: "CE Certification", desc: "European Product Compliance Certification", icon: "🇪🇺" },
+  { name: "SGS Certification", desc: "World-leading Testing Organization Certification", icon: "✅" },
+  { name: "BV Inspection", desc: "Bureau Veritas International Inspection Certification", icon: "🔍" },
+  { name: "TÜV Certification", desc: "German Technical Supervision Association Certification", icon: "🇩🇪" },
+  { name: "High-Tech Enterprise", desc: "National High-Tech Enterprise Certification", icon: "⭐" },
 ];
 
 export function AboutPage() {

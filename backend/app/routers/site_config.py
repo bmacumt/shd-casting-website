@@ -92,6 +92,14 @@ DEFAULTS = {
         {"q": "Do you accept custom orders?", "a": "We accept all types of custom casting orders, including special materials, dimensions, and processes. Please provide drawings or detailed specifications for evaluation and quotation."},
     ], ensure_ascii=False),
 
+    # ─── Checklist ───
+    "checklist": json.dumps([
+        "ISO 9001:2015 Quality Management System Certified",
+        "Complete casting, machining and heat treatment production lines",
+        "Professional R&D team for customized design services",
+        "Strict factory inspection ensuring 100% qualification rate",
+    ], ensure_ascii=False),
+
     # ─── Navbar ───
     "navbar_tag": "Professional Casting Manufacturer · 20 Years of Experience",
 }

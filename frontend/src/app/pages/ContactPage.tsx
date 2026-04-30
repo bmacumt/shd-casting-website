@@ -9,10 +9,10 @@ import { useSiteConfig } from "../utils/useSiteConfig";
 const heroImg = "https://images.unsplash.com/photo-1682834187151-682c7420e88b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdGVlbCUyMGNhc3RpbmclMjBtb2x0ZW4lMjBtZXRhbCUyMG1hbnVmYWN0dXJpbmd8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=1080";
 
 const defaultFaqs = [
-  { q: "最小起订量是多少？", a: "我们的最小起订量根据产品规格不同而有所差异，一般单品种最低起订1吨或50件（以重量较大者为准）。样品订单可协商。" },
-  { q: "交货周期一般是多长时间？", a: "标准产品一般3-7个工作日；定制化产品根据复杂程度，通常需要15-30个工作日；大批量订单另行协商。" },
-  { q: "是否提供样品服务？", a: "是的，我们提供付费样品服务。样品费用在签订正式合同后可从首批货款中扣除。" },
-  { q: "是否接受定制化订单？", a: "我们接受各类定制化铸件订单，包括特殊材质、特殊尺寸、特殊工艺等。请提供图纸或详细规格，我们将为您评估并报价。" },
+  { q: "What is the minimum order quantity?", a: "Our MOQ varies by product specifications. Generally, the minimum is 1 ton or 50 pieces per item (whichever is greater). Sample orders are negotiable." },
+  { q: "What is the typical lead time?", a: "Standard products: 3-7 working days. Custom products: 15-30 working days depending on complexity. Bulk orders are negotiated separately." },
+  { q: "Do you provide sample services?", a: "Yes, we offer paid sample services. Sample fees can be deducted from the first order payment after signing a formal contract." },
+  { q: "Do you accept custom orders?", a: "We accept all types of custom casting orders, including special materials, dimensions, and processes. Please provide drawings or detailed specifications for evaluation and quotation." },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {

@@ -25,8 +25,8 @@ export function Footer() {
           </p>
           <div className="flex gap-2">
             {[
-              { label: t("footer.social_wechat"), initial: "微" },
-              { label: t("footer.social_weibo"), initial: "博" },
+              { label: t("footer.social_wechat"), initial: "We" },
+              { label: t("footer.social_weibo"), initial: "Wb" },
               { label: t("footer.social_linkedin"), initial: "in" },
             ].map((s) => (
               <button
