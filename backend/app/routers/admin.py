@@ -246,16 +246,6 @@ def admin_create_product(body: ProductCreate, db: Session = Depends(get_db), adm
     db.commit()
     db.refresh(product)
 
-    # Auto-translate product name and description
-    try:
-        from app.utils.translator import translate_product
-        translations = translate_product(body.name, body.description or "")
-        if translations:
-            for key, value in translations.items():
-                setattr(product, key, value)
-            db.commit()
-    except Exception as e:
-        logging.getLogger(__name__).error(f"Product auto-translation failed: {e}")
 
     return success(data={"id": product.id}, message="创建成功")
 

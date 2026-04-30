@@ -10,19 +10,15 @@ from app.models.admin import Admin
 from app.models.site_config import SiteConfig
 from app.routers.admin import get_current_admin
 from app.utils.response import success
-from app.utils.translator import translate_site_config
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["site-config"])
 
-# All configurable keys with defaults
 DEFAULTS = {
-    # ─── 公司基本信息 ───
-    "company_name": "上海铸造有限公司",
-    "company_name_en": "SHD Casting Co., Ltd",
-    "address": "上海市奉贤区工业园区铸造路88号",
-    "address_en": "No.88 Casting Road, Fengxian Industrial Zone, Shanghai",
+    # ─── Company Info ───
+    "company_name": "SHD Casting Co., Ltd",
+    "address": "No.88 Casting Road, Fengxian Industrial Zone, Shanghai",
     "zipcode": "201499",
     "phone": "+86 21 1234 5678",
     "phone_sales": "+86 135 0000 1234",
@@ -30,90 +26,74 @@ DEFAULTS = {
     "email_sales": "sales@shdcasting.com",
     "work_hours": "08:30 - 17:30",
     "work_hours_weekend": "09:00 - 12:00",
-    "company_intro": "上海铸造有限公司成立于2004年，是一家集研发、生产、销售于一体的专业铸件制造企业，坐落于上海市奉贤工业园区，占地面积约50,000平方米。",
+    "company_intro": "Founded in 2004, SHD Casting Co., Ltd is a professional casting manufacturer integrating R&D, production, and sales. Located in Shanghai Fengxian Industrial Zone, covering approximately 50,000 square meters.",
 
-    # ─── 首页 Hero ───
-    "hero_tag": "专业铸件制造商 · 20年品质保障",
-    "hero_title": "精密铸造\n铸就品质",
-    "hero_subtitle": "专业生产灰铸铁、球墨铸铁、铸钢及铝合金铸件，服务全球工业制造业，年产能超过50,000吨。",
+    # ─── Hero ───
+    "hero_tag": "Professional Casting Manufacturer · 20 Years of Quality Assurance",
+    "hero_title": "Precision Casting\nForging Quality",
+    "hero_subtitle": "Specializing in gray iron, ductile iron, cast steel, and aluminum alloy castings. Serving global industrial manufacturing with an annual capacity exceeding 50,000 tons.",
 
-    # ─── 首页统计数字 ───
+    # ─── Stats ───
     "stat_years": "20+",
-    "stat_years_label": "年行业经验",
+    "stat_years_label": "Years of Experience",
     "stat_clients": "5,000+",
-    "stat_clients_label": "合作客户",
+    "stat_clients_label": "Partner Clients",
     "stat_countries": "30+",
-    "stat_countries_label": "出口国家",
+    "stat_countries_label": "Export Countries",
     "stat_cert": "ISO9001",
-    "stat_cert_label": "质量认证",
+    "stat_cert_label": "Quality Certifications",
 
-    # ─── 工厂数据 ───
+    # ─── Factory ───
     "factory_area": "50,000㎡",
-    "factory_lines": "5条",
-    "factory_capacity": "50,000吨",
+    "factory_lines": "5 Lines",
+    "factory_capacity": "50,000 Tons",
     "factory_staff": "200+",
 
-    # ─── 核心优势 (JSON数组) ───
+    # ─── Advantages ───
     "advantages": json.dumps([
-        {"title": "严格质量管控", "desc": "通过ISO 9001:2015质量管理体系认证，全程追溯每一批次铸件质量。"},
-        {"title": "先进生产设备", "desc": "引进国内外先进铸造设备，自动化生产线确保产品一致性与精度。"},
-        {"title": "快速交货能力", "desc": "成熟的供应链管理体系，标准件3-7天，定制件15-30天交货。"},
-        {"title": "全球出口经验", "desc": "产品畅销欧美、东南亚30余个国家和地区，熟悉国际贸易规则。"},
+        {"title": "Strict Quality Control", "desc": "ISO 9001:2015 certified quality management system with full batch traceability for every casting."},
+        {"title": "Advanced Equipment", "desc": "State-of-the-art imported casting equipment and automated production lines ensuring consistency and precision."},
+        {"title": "Fast Delivery", "desc": "Mature supply chain management — standard parts in 3-7 days, custom parts in 15-30 days."},
+        {"title": "Global Export Experience", "desc": "Products sold to over 30 countries across Europe, Americas, and Southeast Asia with full international trade compliance."},
     ], ensure_ascii=False),
 
-    # ─── 资质认证 (JSON数组) ───
+    # ─── Certifications ───
     "certifications": json.dumps([
-        {"name": "ISO 9001:2015", "desc": "质量管理体系认证"},
-        {"name": "CE认证", "desc": "欧洲产品合规认证"},
-        {"name": "SGS认证", "desc": "全球领先检测机构认证"},
-        {"name": "BV检验", "desc": "法国必维国际检验认证"},
-        {"name": "TÜV认证", "desc": "德国技术监督协会认证"},
+        {"name": "ISO 9001:2015", "desc": "Quality Management System Certification"},
+        {"name": "CE Certification", "desc": "European Product Compliance Certification"},
+        {"name": "SGS Certification", "desc": "World-leading Testing Organization Certification"},
+        {"name": "BV Inspection", "desc": "Bureau Veritas International Inspection Certification"},
+        {"name": "TÜV Certification", "desc": "German Technical Supervision Association Certification"},
     ], ensure_ascii=False),
 
-    # ─── 发展历程 (JSON数组) ───
+    # ─── Milestones ───
     "milestones": json.dumps([
-        {"year": "2004", "title": "公司成立", "desc": "上海铸造有限公司在上海奉贤区正式成立，首批员工50人。"},
-        {"year": "2007", "title": "首次通过ISO认证", "desc": "取得ISO 9001质量管理体系认证，质量管理走向规范化。"},
-        {"year": "2010", "title": "产能突破10,000吨", "desc": "新增生产线，年产能突破10,000吨，开始出口东南亚市场。"},
-        {"year": "2015", "title": "欧美市场拓展", "desc": "产品进入欧洲、北美市场，出口额占总营收40%以上。"},
-        {"year": "2019", "title": "智能化升级", "desc": "引进智能铸造生产线，自动化率达到75%，效率提升显著。"},
-        {"year": "2024", "title": "20周年腾飞", "desc": "年产能达50,000吨，员工超500人，服务全球30+国家客户。"},
+        {"year": "2004", "title": "Company Founded", "desc": "SHD Casting officially established in Fengxian District, Shanghai, with an initial team of 50 employees."},
+        {"year": "2007", "title": "ISO Certification", "desc": "Obtained ISO 9001 quality management system certification, marking a new era of standardized quality management."},
+        {"year": "2010", "title": "Capacity Exceeded 10,000 Tons", "desc": "Added new production lines. Annual capacity exceeded 10,000 tons. Began exporting to Southeast Asian markets."},
+        {"year": "2015", "title": "European & American Markets", "desc": "Products entered European and North American markets. Export revenue exceeded 40% of total revenue."},
+        {"year": "2019", "title": "Smart Manufacturing Upgrade", "desc": "Introduced intelligent casting production lines. Automation rate reached 75% with significantly improved efficiency."},
+        {"year": "2024", "title": "20th Anniversary", "desc": "Annual capacity reached 50,000 tons with 500+ employees, serving customers in over 30 countries worldwide."},
     ], ensure_ascii=False),
 
-    # ─── 管理团队 (JSON数组) ───
+    # ─── Team ───
     "team": json.dumps([
-        {"name": "张建国", "title": "董事长 & 总经理", "exp": "30年铸造行业经验"},
-        {"name": "李明华", "title": "技术总监", "exp": "高级工程师，发明专利12项"},
-        {"name": "王秀芳", "title": "质量总监", "exp": "ISO认证内审员，从业25年"},
-        {"name": "陈志远", "title": "销售总监", "exp": "海外市场拓展专家"},
+        {"name": "Zhang Jianguo", "title": "Chairman & General Manager", "exp": "30 years of casting industry experience"},
+        {"name": "Li Minghua", "title": "Technical Director", "exp": "Senior engineer with 12 invention patents"},
+        {"name": "Wang Xiufang", "title": "Quality Director", "exp": "ISO certified internal auditor, 25 years of experience"},
+        {"name": "Chen Zhiyuan", "title": "Sales Director", "exp": "Overseas market expansion expert"},
     ], ensure_ascii=False),
 
-    # ─── 常见问题 (JSON数组) ───
+    # ─── FAQs ───
     "faqs": json.dumps([
-        {"q": "最小起订量是多少？", "a": "我们的最小起订量根据产品规格不同而有所差异，一般单品种最低起订1吨或50件（以重量较大者为准）。样品订单可协商。"},
-        {"q": "交货周期一般是多长时间？", "a": "标准产品一般3-7个工作日；定制化产品根据复杂程度，通常需要15-30个工作日；大批量订单另行协商。"},
-        {"q": "是否提供样品服务？", "a": "是的，我们提供付费样品服务。样品费用在签订正式合同后可从首批货款中扣除。"},
-        {"q": "是否接受定制化订单？", "a": "我们接受各类定制化铸件订单，包括特殊材质、特殊尺寸、特殊工艺等。请提供图纸或详细规格，我们将为您评估并报价。"},
+        {"q": "What is the minimum order quantity?", "a": "Our MOQ varies by product specifications. Generally, the minimum is 1 ton or 50 pieces per item (whichever is greater). Sample orders are negotiable."},
+        {"q": "What is the typical lead time?", "a": "Standard products: 3-7 working days. Custom products: 15-30 working days depending on complexity. Bulk orders are negotiated separately."},
+        {"q": "Do you provide sample services?", "a": "Yes, we offer paid sample services. Sample fees can be deducted from the first order payment after signing a formal contract."},
+        {"q": "Do you accept custom orders?", "a": "We accept all types of custom casting orders, including special materials, dimensions, and processes. Please provide drawings or detailed specifications for evaluation and quotation."},
     ], ensure_ascii=False),
 
-    # ─── 导航栏 ───
-    "navbar_tag": "专业铸件制造商 · 20年行业经验",
-
-    # ─── 多语言翻译占位 (auto-generated by DeepSeek) ───
-    "company_intro_en": "", "company_intro_es": "", "company_intro_ru": "",
-    "hero_tag_en": "", "hero_tag_es": "", "hero_tag_ru": "",
-    "hero_title_en": "", "hero_title_es": "", "hero_title_ru": "",
-    "hero_subtitle_en": "", "hero_subtitle_es": "", "hero_subtitle_ru": "",
-    "stat_years_label_en": "", "stat_years_label_es": "", "stat_years_label_ru": "",
-    "stat_clients_label_en": "", "stat_clients_label_es": "", "stat_clients_label_ru": "",
-    "stat_countries_label_en": "", "stat_countries_label_es": "", "stat_countries_label_ru": "",
-    "stat_cert_label_en": "", "stat_cert_label_es": "", "stat_cert_label_ru": "",
-    "navbar_tag_en": "", "navbar_tag_es": "", "navbar_tag_ru": "",
-    "advantages_en": "", "advantages_es": "", "advantages_ru": "",
-    "milestones_en": "", "milestones_es": "", "milestones_ru": "",
-    "certifications_en": "", "certifications_es": "", "certifications_ru": "",
-    "team_en": "", "team_es": "", "team_ru": "",
-    "faqs_en": "", "faqs_es": "", "faqs_ru": "",
+    # ─── Navbar ───
+    "navbar_tag": "Professional Casting Manufacturer · 20 Years of Experience",
 }
 
 
@@ -148,22 +128,4 @@ def admin_update_site_config(body: SiteConfigUpdate, db: Session = Depends(get_d
             db.add(SiteConfig(key=key, value=value))
         saved[key] = value
     db.commit()
-
-    # 2. Auto-translate Chinese content to en/es/ru via DeepSeek
-    try:
-        translations = translate_site_config(saved)
-        if translations:
-            for key, value in translations.items():
-                if key not in DEFAULTS:
-                    continue
-                row = db.query(SiteConfig).filter(SiteConfig.key == key).first()
-                if row:
-                    row.value = value
-                else:
-                    db.add(SiteConfig(key=key, value=value))
-            db.commit()
-            logger.info(f"Auto-translation completed: {len(translations)} keys")
-    except Exception as e:
-        logger.error(f"Auto-translation failed (config saved anyway): {e}")
-
-    return success(message="更新成功")
+    return success(message="Updated successfully")

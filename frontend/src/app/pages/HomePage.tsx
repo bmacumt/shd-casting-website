@@ -41,7 +41,7 @@ const defaultCerts = ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜ
 
 export function HomePage() {
   const { t } = useTranslation();
-  const { cfg, t: cfgT, lang } = useSiteConfig();
+  const { cfg, t: cfgT } = useSiteConfig();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const certsJson = cfgT("certifications");
   const certifications = certsJson ? JSON.parse(certsJson).map((c: any) => c.name) : defaultCerts;
@@ -61,13 +61,7 @@ export function HomePage() {
   const heroTitle = cfgT("hero_title") || t("home.about_title");
   const heroSubtitle = cfgT("hero_subtitle") || t("home.about_desc");
 
-  const localizedName = (item: { name: string; name_en?: string; name_es?: string; name_ru?: string }) => {
-    if (lang !== 'zh') {
-      const key = `name_${lang}` as keyof typeof item;
-      if (item[key]) return item[key] as string;
-    }
-    return item.name;
-  };
+  const en = (item: { name: string; name_en?: string }) => item.name_en || item.name;
 
   return (
     <div>
@@ -209,12 +203,12 @@ export function HomePage() {
               <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="group bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative h-44 sm:h-48 overflow-hidden">
-                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=400"} alt={localizedName(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=400"} alt={en(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-3 left-4 text-2xl">{product.tag === "热销" ? "🔥" : product.tag === "新品" ? "✨" : "⚙️"}</div>
                 </div>
                 <div className="p-4 sm:p-5">
-                  <h3 className="text-[#1a2744] font-bold mb-1.5 sm:mb-2">{localizedName(product)}</h3>
+                  <h3 className="text-[#1a2744] font-bold mb-1.5 sm:mb-2">{en(product)}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed mb-3 sm:mb-4">{product.material || ""}</p>
                   <Link to="/products" className="inline-flex items-center gap-1 text-[#f97316] text-sm font-semibold hover:gap-2 transition-all">
                     {t("home.learn_more")} <ChevronRight className="w-4 h-4" />

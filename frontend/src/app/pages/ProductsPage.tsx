@@ -5,7 +5,6 @@ import { ChevronRight, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getProducts, getCategories } from "../utils/api";
 import type { Product, Category } from "../utils/api";
-import { useSiteConfig } from "../utils/useSiteConfig";
 
 const heroImg = "https://images.unsplash.com/photo-1767739791246-9f832345f8f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwbWV0YWwlMjBwYXJ0cyUyMG1hY2hpbmVyeSUyMGVxdWlwbWVudHxlbnwxfHx8fDE3Nzc0NzE1NTl8MA&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -20,7 +19,7 @@ const fallbackProducts = [
 
 export function ProductsPage() {
   const { t } = useTranslation();
-  const { lang } = useSiteConfig();
+  
   const [activeCategory, setActiveCategory] = useState(0);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -39,13 +38,7 @@ export function ProductsPage() {
       .catch(() => setProducts(fallbackProducts));
   }, [activeCategory, search]);
 
-  const localizedName = (item: { name: string; name_en?: string; name_es?: string; name_ru?: string }) => {
-    if (lang !== 'zh') {
-      const key = `name_${lang}` as keyof typeof item;
-      if (item[key]) return item[key] as string;
-    }
-    return item.name;
-  };
+  const en = (item: { name: string; name_en?: string }) => item.name_en || item.name;
 
   const applications = [
     { icon: "🚗", title: t("home.app_auto"), desc: t("home.app_auto_desc") },
@@ -91,7 +84,7 @@ export function ProductsPage() {
                   activeCategory === cat.id ? "bg-[#f97316] text-white shadow-md shadow-orange-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                {localizedName(cat)}
+                {en(cat)}
               </button>
             ))}
           </div>
@@ -124,7 +117,7 @@ export function ProductsPage() {
                 className="group bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="relative h-48 sm:h-52 overflow-hidden">
-                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=600"} alt={localizedName(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=600"} alt={en(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   {product.tag && (
                     <span className="absolute top-3 left-3 bg-[#f97316] text-white text-xs px-2.5 py-1 rounded-full font-medium">{product.tag}</span>
@@ -132,7 +125,7 @@ export function ProductsPage() {
                 </div>
                 <div className="p-4 sm:p-5">
                   <div className="text-xs text-[#f97316] font-medium mb-1">{product.category ? localizedName(product.category) : ""}</div>
-                  <h3 className="text-[#1a2744] font-bold text-base mb-3">{localizedName(product)}</h3>
+                  <h3 className="text-[#1a2744] font-bold text-base mb-3">{en(product)}</h3>
                   <div className="space-y-1.5 text-sm text-gray-500 mb-4">
                     <div className="flex justify-between gap-2">
                       <span className="text-gray-400 shrink-0">{t("products.material")}</span>

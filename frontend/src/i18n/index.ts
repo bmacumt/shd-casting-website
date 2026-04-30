@@ -1,21 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import zh from './zh.json';
 import en from './en.json';
-import es from './es.json';
-import ru from './ru.json';
-
-const savedLang = localStorage.getItem('lang') || 'zh';
+import zh from './zh.json';
 
 i18n.use(initReactI18next).init({
   resources: {
-    zh: { translation: zh },
     en: { translation: en },
-    es: { translation: es },
-    ru: { translation: ru },
+    zh: { translation: zh },
   },
-  lng: savedLang,
-  fallbackLng: 'zh',
+  lng: 'en',
+  fallbackLng: 'en',
   interpolation: { escapeValue: false },
 });
 
