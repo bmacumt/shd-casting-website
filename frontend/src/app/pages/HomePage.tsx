@@ -80,11 +80,12 @@ const advantages = [
   },
 ];
 
-const certifications = cfg.certifications ? JSON.parse(cfg.certifications).map((c: any) => c.name) : ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
+const defaultCerts = ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
 
 export function HomePage() {
   const cfg = useSiteConfig();
   const [featured, setFeatured] = useState(products);
+  const certifications = cfg.certifications ? JSON.parse(cfg.certifications).map((c: any) => c.name) : defaultCerts;
 
   useEffect(() => {
     getFeaturedProducts()
