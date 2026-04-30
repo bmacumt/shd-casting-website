@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { getFeaturedProducts } from "../utils/api";
 import type { Product } from "../utils/api";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 const heroImg = "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZXRhbCUyMGNhc3RpbmclMjBmb3VuZHJ5JTIwaW5kdXN0cmlhbCUyMGZhY3Rvcnl8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=1080";
 const aboutImg = "https://images.unsplash.com/photo-1682834187151-682c7420e88b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdGVlbCUyMGNhc3RpbmclMjBtb2x0ZW4lMjBtZXRhbCUyMG1hbnVmYWN0dXJpbmd8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=1080";
@@ -47,12 +48,14 @@ const products = [
   },
 ];
 
-const stats = [
+const defaultStats = [
   { value: "20+", label: "年行业经验", icon: <Clock className="w-6 h-6 md:w-7 md:h-7" /> },
   { value: "5000+", label: "合作客户", icon: <Users className="w-6 h-6 md:w-7 md:h-7" /> },
   { value: "30+", label: "出口国家", icon: <Globe className="w-6 h-6 md:w-7 md:h-7" /> },
   { value: "ISO9001", label: "质量认证", icon: <Award className="w-6 h-6 md:w-7 md:h-7" /> },
 ];
+
+const statIcons = [<Clock className="w-6 h-6 md:w-7 md:h-7" />, <Users className="w-6 h-6 md:w-7 md:h-7" />, <Globe className="w-6 h-6 md:w-7 md:h-7" />, <Award className="w-6 h-6 md:w-7 md:h-7" />];
 
 const advantages = [
   {
@@ -77,9 +80,10 @@ const advantages = [
   },
 ];
 
-const certifications = ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
+const certifications = cfg.certifications ? JSON.parse(cfg.certifications).map((c: any) => c.name) : ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
 
 export function HomePage() {
+  const cfg = useSiteConfig();
   const [featured, setFeatured] = useState(products);
 
   useEffect(() => {
@@ -120,17 +124,17 @@ export function HomePage() {
           >
             <div className="inline-flex items-center gap-2 bg-[#f97316]/20 border border-[#f97316]/40 text-[#f97316] text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full mb-5">
               <span className="w-2 h-2 rounded-full bg-[#f97316] animate-pulse shrink-0" />
-              专业铸件制造商 · 20年品质保障
+              {cfg.hero_tag || "专业铸件制造商 · 20年品质保障"}
             </div>
 
             <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-4">
-              精密铸造
-              <br />
-              <span className="text-[#f97316]">铸就品质</span>
+              {(cfg.hero_title || "精密铸造\n铸就品质").split("\n").map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{i === 1 ? <span className="text-[#f97316]">{line}</span> : line}</span>
+              ))}
             </h1>
 
             <p className="text-white/75 text-sm sm:text-base md:text-lg leading-relaxed mb-7 max-w-xl">
-              专业生产灰铸铁、球墨铸铁、铸钢及铝合金铸件，服务全球工业制造业，年产能超过50,000吨。
+              {cfg.hero_subtitle || "专业生产灰铸铁、球墨铸铁、铸钢及铝合金铸件，服务全球工业制造业，年产能超过50,000吨。"}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -154,9 +158,14 @@ export function HomePage() {
         {/* Stats ribbon — desktop only */}
         <div className="absolute bottom-0 left-0 right-0 bg-[#0d1b35]/85 backdrop-blur-sm hidden md:block">
           <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-4 divide-x divide-white/10">
-            {stats.map((s) => (
-              <div key={s.label} className="flex items-center gap-4 px-6 first:pl-0">
-                <div className="text-[#f97316]">{s.icon}</div>
+            {[
+              { value: cfg.stat_years || "20+", label: cfg.stat_years_label || "年行业经验" },
+              { value: cfg.stat_clients || "5,000+", label: cfg.stat_clients_label || "合作客户" },
+              { value: cfg.stat_countries || "30+", label: cfg.stat_countries_label || "出口国家" },
+              { value: cfg.stat_cert || "ISO9001", label: cfg.stat_cert_label || "质量认证" },
+            ].map((s, i) => (
+              <div key={i} className="flex items-center gap-4 px-6 first:pl-0">
+                <div className="text-[#f97316]">{statIcons[i]}</div>
                 <div>
                   <div className="text-white text-xl font-black">{s.value}</div>
                   <div className="text-white/50 text-xs">{s.label}</div>
@@ -169,9 +178,14 @@ export function HomePage() {
 
       {/* Stats — mobile (2×2 grid below hero) */}
       <div className="md:hidden bg-[#1a2744] grid grid-cols-2 divide-x divide-y divide-white/10">
-        {stats.map((s) => (
-          <div key={s.label} className="flex items-center gap-3 p-4">
-            <div className="text-[#f97316]">{s.icon}</div>
+        {[
+          { value: cfg.stat_years || "20+", label: cfg.stat_years_label || "年行业经验" },
+          { value: cfg.stat_clients || "5,000+", label: cfg.stat_clients_label || "合作客户" },
+          { value: cfg.stat_countries || "30+", label: cfg.stat_countries_label || "出口国家" },
+          { value: cfg.stat_cert || "ISO9001", label: cfg.stat_cert_label || "质量认证" },
+        ].map((s, i) => (
+          <div key={i} className="flex items-center gap-3 p-4">
+            <div className="text-[#f97316]">{statIcons[i]}</div>
             <div>
               <div className="text-white text-lg font-black">{s.value}</div>
               <div className="text-white/50 text-xs">{s.label}</div>
@@ -324,10 +338,10 @@ export function HomePage() {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-3xl mx-auto">
             {[
-              { v: "50,000㎡", l: "厂房面积" },
-              { v: "5条", l: "自动化生产线" },
-              { v: "50,000吨", l: "年生产能力" },
-              { v: "200+", l: "专业技术人员" },
+              { v: cfg.factory_area || "50,000㎡", l: "厂房面积" },
+              { v: cfg.factory_lines || "5条", l: "自动化生产线" },
+              { v: cfg.factory_capacity || "50,000吨", l: "年生产能力" },
+              { v: cfg.factory_staff || "200+", l: "专业技术人员" },
             ].map((item) => (
               <div
                 key={item.l}

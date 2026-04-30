@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
+import { getSiteConfig } from "../utils/api";
 
 const navLinks = [
   { label: "首页", to: "/" },
@@ -12,7 +13,10 @@ const navLinks = [
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [cfg, setCfg] = useState<Record<string, string>>({});
   const location = useLocation();
+
+  useEffect(() => { getSiteConfig().then(setCfg).catch(() => {}); }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -29,15 +33,15 @@ export function Navbar() {
       {/* Top bar */}
       <div className="bg-[#1a2744] text-white/80 text-sm hidden md:block">
         <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
-          <span>专业铸件制造商 · 20年行业经验</span>
+          <span>{cfg.navbar_tag || "专业铸件制造商 · 20年行业经验"}</span>
           <div className="flex items-center gap-6">
-            <a href="tel:+862112345678" className="flex items-center gap-1.5 hover:text-[#f97316] transition-colors">
+            <a href={`tel:${cfg.phone || "+862112345678"}`} className="flex items-center gap-1.5 hover:text-[#f97316] transition-colors">
               <Phone className="w-3.5 h-3.5" />
-              <span>+86 21 1234 5678</span>
+              <span>{cfg.phone || "+86 21 1234 5678"}</span>
             </a>
-            <a href="mailto:info@shdcasting.com" className="flex items-center gap-1.5 hover:text-[#f97316] transition-colors">
+            <a href={`mailto:${cfg.email || "info@shdcasting.com"}`} className="flex items-center gap-1.5 hover:text-[#f97316] transition-colors">
               <Mail className="w-3.5 h-3.5" />
-              <span>info@shdcasting.com</span>
+              <span>{cfg.email || "info@shdcasting.com"}</span>
             </a>
           </div>
         </div>

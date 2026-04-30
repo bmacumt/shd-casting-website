@@ -7,7 +7,7 @@ import { getSiteConfig } from "../utils/api";
 const heroImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYWN0b3J5JTIwcHJvZHVjdGlvbiUyMGxpbmUlMjBtYW51ZmFjdHVyaW5nJTIwcGxhbnR8ZW58MXx8fHwxNzc3NDcxNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080";
 const teamImg = "https://images.unsplash.com/photo-1748640857973-93524ef0fe7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVjaXNpb24lMjBlbmdpbmVlcmluZyUyMHdvcmtzaG9wJTIwQ05DJTIwbWFjaGluaW5nfGVufDF8fHx8MTc3NzQ3MTU2MHww&ixlib=rb-4.1.0&q=80&w=1080";
 
-const milestones = [
+const defaultMilestones = [
   { year: "2004", title: "公司成立", desc: "上海铸造有限公司在上海奉贤区正式成立，首批员工50人。" },
   { year: "2007", title: "首次通过ISO认证", desc: "取得ISO 9001质量管理体系认证，质量管理走向规范化。" },
   { year: "2010", title: "产能突破10,000吨", desc: "新增生产线，年产能突破10,000吨，开始出口东南亚市场。" },
@@ -16,14 +16,14 @@ const milestones = [
   { year: "2024", title: "20周年腾飞", desc: "年产能达50,000吨，员工超500人，服务全球30+国家客户。" },
 ];
 
-const team = [
+const defaultTeam = [
   { name: "张建国", title: "董事长 & 总经理", exp: "30年铸造行业经验" },
   { name: "李明华", title: "技术总监", exp: "高级工程师，发明专利12项" },
   { name: "王秀芳", title: "质量总监", exp: "ISO认证内审员，从业25年" },
   { name: "陈志远", title: "销售总监", exp: "海外市场拓展专家" },
 ];
 
-const certs = [
+const defaultCerts = [
   { name: "ISO 9001:2015", desc: "质量管理体系认证", icon: "🏅" },
   { name: "CE认证", desc: "欧洲产品合规认证", icon: "🇪🇺" },
   { name: "SGS检验", desc: "全球领先检测机构认证", icon: "✅" },
@@ -38,6 +38,10 @@ export function AboutPage() {
   useEffect(() => {
     getSiteConfig().then(setCfg).catch(() => {});
   }, []);
+
+  const milestones = cfg.milestones ? JSON.parse(cfg.milestones) : defaultMilestones;
+  const team = cfg.team ? JSON.parse(cfg.team) : defaultTeam;
+  const certs = cfg.certifications ? JSON.parse(cfg.certifications) : defaultCerts;
 
   return (
     <div>

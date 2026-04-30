@@ -10,7 +10,7 @@ const productOptions = [
   "灰铸铁件", "球墨铸铁件", "铸钢件", "铝合金铸件", "精密铸造件", "其他产品",
 ];
 
-const faqs = [
+const defaultFaqs = [
   { q: "最小起订量是多少？", a: "我们的最小起订量根据产品规格不同而有所差异，一般单品种最低起订1吨或50件（以重量较大者为准）。样品订单可协商。" },
   { q: "交货周期一般是多长时间？", a: "标准产品一般3-7个工作日；定制化产品根据复杂程度，通常需要15-30个工作日；大批量订单另行协商。" },
   { q: "是否提供样品服务？", a: "是的，我们提供付费样品服务。样品费用在签订正式合同后可从首批货款中扣除。" },
@@ -59,6 +59,8 @@ export function ContactPage() {
   useEffect(() => {
     getSiteConfig().then(setCfg).catch(() => {});
   }, []);
+
+  const faqs = cfg.faqs ? JSON.parse(cfg.faqs) : defaultFaqs;
 
   const contactInfo = [
     {
