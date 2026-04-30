@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "./uploads"
     MAX_UPLOAD_SIZE_MB: int = 5
 
+    DEEPSEEK_API_KEY: str = ""
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
