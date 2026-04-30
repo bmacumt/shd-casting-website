@@ -1,33 +1,10 @@
-import { useState } from "react";
-import { submitInquiry } from "../utils/api";
+import { useState, useEffect } from "react";
+import { submitInquiry, getSiteConfig } from "../utils/api";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Phone, Mail, MapPin, Clock, Send, CheckCircle, ChevronDown } from "lucide-react";
 
 const heroImg = "https://images.unsplash.com/photo-1682834187151-682c7420e88b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdGVlbCUyMGNhc3RpbmclMjBtb2x0ZW4lMjBtZXRhbCUyMG1hbnVmYWN0dXJpbmd8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=1080";
-
-const contactInfo = [
-  {
-    icon: <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: "公司地址",
-    lines: ["上海市奉贤区工业园区铸造路88号", "邮编：201499"],
-  },
-  {
-    icon: <Phone className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: "联系电话",
-    lines: ["+86 21 1234 5678（总机）", "+86 135 0000 1234（销售热线）"],
-  },
-  {
-    icon: <Mail className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: "电子邮件",
-    lines: ["info@shdcasting.com", "sales@shdcasting.com"],
-  },
-  {
-    icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
-    title: "工作时间",
-    lines: ["周一至周五：08:30 - 17:30", "周六：09:00 - 12:00"],
-  },
-];
 
 const productOptions = [
   "灰铸铁件", "球墨铸铁件", "铸钢件", "铝合金铸件", "精密铸造件", "其他产品",
@@ -66,6 +43,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export function ContactPage() {
+  const [cfg, setCfg] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -77,6 +55,39 @@ export function ContactPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getSiteConfig().then(setCfg).catch(() => {});
+  }, []);
+
+  const contactInfo = [
+    {
+      icon: <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />,
+      title: "公司地址",
+      lines: [cfg.address || "上海市奉贤区工业园区铸造路88号", cfg.zipcode ? `邮编：${cfg.zipcode}` : "邮编：201499"],
+    },
+    {
+      icon: <Phone className="w-5 h-5 sm:w-6 sm:h-6" />,
+      title: "联系电话",
+      lines: [
+        cfg.phone ? `${cfg.phone}（总机）` : "+86 21 1234 5678（总机）",
+        cfg.phone_sales ? `${cfg.phone_sales}（销售热线）` : "+86 135 0000 1234（销售热线）",
+      ],
+    },
+    {
+      icon: <Mail className="w-5 h-5 sm:w-6 sm:h-6" />,
+      title: "电子邮件",
+      lines: [cfg.email || "info@shdcasting.com", cfg.email_sales || "sales@shdcasting.com"],
+    },
+    {
+      icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+      title: "工作时间",
+      lines: [
+        cfg.work_hours ? `周一至周五：${cfg.work_hours}` : "周一至周五：08:30 - 17:30",
+        cfg.work_hours_weekend ? `周六：${cfg.work_hours_weekend}` : "周六：09:00 - 12:00",
+      ],
+    },
+  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -134,14 +145,14 @@ export function ContactPage() {
       <div className="md:hidden bg-white border-b border-gray-100">
         <div className="flex divide-x divide-gray-100">
           <a
-            href="tel:+862112345678"
+            href={`tel:${cfg.phone || "+862112345678"}`}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 text-[#1a2744] font-semibold text-sm active:bg-gray-50"
           >
             <Phone className="w-4 h-4 text-[#f97316]" />
             立即拨打
           </a>
           <a
-            href="mailto:sales@shdcasting.com"
+            href={`mailto:${cfg.email_sales || "sales@shdcasting.com"}`}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 text-[#1a2744] font-semibold text-sm active:bg-gray-50"
           >
             <Mail className="w-4 h-4 text-[#f97316]" />
@@ -193,8 +204,7 @@ export function ContactPage() {
               <div className="h-40 sm:h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl overflow-hidden relative hidden sm:block">
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
                   <MapPin className="w-8 h-8 mb-2 text-[#f97316]" />
-                  <span className="text-sm font-medium text-gray-600">上海市奉贤区工业园区</span>
-                  <span className="text-xs text-gray-400 mt-1">铸造路88号</span>
+                  <span className="text-sm font-medium text-gray-600">{cfg.address || "上海市奉贤区工业园区"}</span>
                 </div>
               </div>
             </div>

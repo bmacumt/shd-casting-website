@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Award, Users, Globe, Clock } from "lucide-react";
+import { getSiteConfig } from "../utils/api";
 
 const heroImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYWN0b3J5JTIwcHJvZHVjdGlvbiUyMGxpbmUlMjBtYW51ZmFjdHVyaW5nJTIwcGxhbnR8ZW58MXx8fHwxNzc3NDcxNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080";
 const teamImg = "https://images.unsplash.com/photo-1748640857973-93524ef0fe7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVjaXNpb24lMjBlbmdpbmVlcmluZyUyMHdvcmtzaG9wJTIwQ05DJTIwbWFjaGluaW5nfGVufDF8fHx8MTc3NzQ3MTU2MHww&ixlib=rb-4.1.0&q=80&w=1080";
@@ -31,6 +33,12 @@ const certs = [
 ];
 
 export function AboutPage() {
+  const [cfg, setCfg] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    getSiteConfig().then(setCfg).catch(() => {});
+  }, []);
+
   return (
     <div>
       {/* ───── Page Hero ───── */}
@@ -69,20 +77,20 @@ export function AboutPage() {
               工业铸件制造商
             </h2>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              上海铸造有限公司（SHD Casting Co., Ltd）成立于2004年，总部位于上海市奉贤区工业园区，是一家集铸件研发、设计、生产、机加工及热处理于一体的综合性制造企业。
+              {cfg.company_intro || "上海铸造有限公司（SHD Casting Co., Ltd）成立于2004年，总部位于上海市奉贤区工业园区，是一家集铸件研发、设计、生产、机加工及热处理于一体的综合性制造企业。"}
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              公司拥有现代化厂房50,000余平方米，员工500余人，其中专业技术人员200余人。公司装备有先进的自动化铸造生产线5条，配备三坐标测量机、直读光谱仪、超声波探伤仪等精密检测设备，年产能超过50,000吨。
+              公司拥有现代化厂房{(cfg.factory_area || "50,000余")}平方米，员工500余人，其中专业技术人员200余人。公司装备有先进的自动化铸造生产线5条，配备三坐标测量机、直读光谱仪、超声波探伤仪等精密检测设备，年产能超过{(cfg.annual_capacity || "50,000")}吨。
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-5 md:mb-6">
-              经过20年的发展，公司产品远销欧洲、北美、东南亚等30余个国家和地区，与数十家世界500强企业建立了长期稳定的合作关系。
+              经过20年的发展，公司产品远销欧洲、北美、东南亚等{cfg.export_countries || "30余"}个国家和地区，与数十家世界500强企业建立了长期稳定的合作关系。
             </p>
 
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: <Clock className="w-4 h-4" />, label: "成立于2004年", sub: "20年行业深耕" },
-                { icon: <Users className="w-4 h-4" />, label: "500+员工", sub: "专业技术团队" },
-                { icon: <Globe className="w-4 h-4" />, label: "30+出口国家", sub: "全球化布局" },
+                { icon: <Clock className="w-4 h-4" />, label: "成立于2004年", sub: `${cfg.years_experience || "20"}年行业深耕` },
+                { icon: <Users className="w-4 h-4" />, label: `${cfg.clients_count || "500+"}合作客户`, sub: "专业技术团队" },
+                { icon: <Globe className="w-4 h-4" />, label: `${cfg.export_countries || "30+"}出口国家`, sub: "全球化布局" },
                 { icon: <Award className="w-4 h-4" />, label: "6项权威认证", sub: "品质保证体系" },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-2.5 p-3 sm:p-4 bg-gray-50 rounded-lg">

@@ -1,7 +1,15 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import { Phone, Mail, MapPin, Globe } from "lucide-react";
+import { getSiteConfig } from "../utils/api";
 
 export function Footer() {
+  const [cfg, setCfg] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    getSiteConfig().then(setCfg).catch(() => {});
+  }, []);
+
   return (
     <footer className="bg-[#0d1b35] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
@@ -12,12 +20,12 @@ export function Footer() {
               <span className="text-white font-black text-sm">SHD</span>
             </div>
             <div>
-              <div className="text-white font-bold text-base leading-tight">上海铸造有限公司</div>
-              <div className="text-white/50 text-xs">SHD CASTING CO., LTD</div>
+              <div className="text-white font-bold text-base leading-tight">{cfg.company_name || "上海铸造有限公司"}</div>
+              <div className="text-white/50 text-xs">{cfg.company_name_en || "SHD CASTING CO., LTD"}</div>
             </div>
           </div>
           <p className="text-white/60 text-sm leading-relaxed mb-4">
-            专注于高精度铸件制造20余年，为全球客户提供优质的铸铁、铸钢及铝合金铸件解决方案。
+            {cfg.company_intro || "专注于高精度铸件制造20余年，为全球客户提供优质的铸铁、铸钢及铝合金铸件解决方案。"}
           </p>
           <div className="flex gap-2">
             {["微信", "微博", "领英"].map((s) => (
@@ -85,24 +93,24 @@ export function Footer() {
           <ul className="space-y-3">
             <li className="flex gap-3 text-sm text-white/60">
               <MapPin className="w-4 h-4 text-[#f97316] mt-0.5 shrink-0" />
-              <span>上海市奉贤区工业园区铸造路88号</span>
+              <span>{cfg.address || "上海市奉贤区工业园区铸造路88号"}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
             </li>
             <li>
               <a
-                href="tel:+862112345678"
+                href={`tel:${cfg.phone || "+862112345678"}`}
                 className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#f97316] shrink-0" />
-                <span>+86 21 1234 5678</span>
+                <span>{cfg.phone || "+86 21 1234 5678"}</span>
               </a>
             </li>
             <li>
               <a
-                href="mailto:info@shdcasting.com"
+                href={`mailto:${cfg.email || "info@shdcasting.com"}`}
                 className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors"
               >
                 <Mail className="w-4 h-4 text-[#f97316] shrink-0" />
-                <span>info@shdcasting.com</span>
+                <span>{cfg.email || "info@shdcasting.com"}</span>
               </a>
             </li>
             <li className="flex gap-3 text-sm text-white/60">
@@ -116,7 +124,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
-          <span>© 2024 上海铸造有限公司 版权所有</span>
+          <span>© 2024 {cfg.company_name || "上海铸造有限公司"} 版权所有</span>
           <span>沪ICP备XXXXXXXX号 | 技术支持：XX科技</span>
         </div>
       </div>
