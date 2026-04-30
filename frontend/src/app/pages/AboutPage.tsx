@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Award, Users, Globe, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getSiteConfig } from "../utils/api";
 
 const heroImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYWN0b3J5JTIwcHJvZHVjdGlvbiUyMGxpbmUlMjBtYW51ZmFjdHVyaW5nJTIwcGxhbnR8ZW58MXx8fHwxNzc3NDcxNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080";
@@ -33,11 +34,21 @@ const defaultCerts = [
 ];
 
 export function AboutPage() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const [cfg, setCfg] = useState<Record<string, string>>({});
 
   useEffect(() => {
     getSiteConfig().then(setCfg).catch(() => {});
   }, []);
+
+  const cfgT = (key: string) => {
+    if (lang !== 'zh') {
+      const v = cfg[`${key}_${lang}`];
+      if (v) return v;
+    }
+    return cfg[key] || '';
+  };
 
   const milestones = cfg.milestones ? JSON.parse(cfg.milestones) : defaultMilestones;
   const team = cfg.team ? JSON.parse(cfg.team) : defaultTeam;
@@ -45,57 +56,49 @@ export function AboutPage() {
 
   return (
     <div>
-      {/* ───── Page Hero ───── */}
+      {/* Page Hero */}
       <section className="relative h-44 sm:h-56 md:h-64 flex items-center">
-        <img src={heroImg} alt="关于我们" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroImg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-[#0d1b35]/75" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center gap-2 text-white/60 text-xs sm:text-sm mb-2 sm:mb-3">
-            <Link to="/" className="hover:text-[#f97316] transition-colors">首页</Link>
+            <Link to="/" className="hover:text-[#f97316] transition-colors">{t("nav.home")}</Link>
             <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-white">关于我们</span>
+            <span className="text-white">{t("nav.about")}</span>
           </div>
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-black">关于我们</h1>
-          <p className="text-white/70 mt-1 sm:mt-2 text-sm sm:text-base">
-            专注铸造20年，铸就行业品质标杆
-          </p>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-black">{t("about.title")}</h1>
+          <p className="text-white/70 mt-1 sm:mt-2 text-sm sm:text-base">{t("about.subtitle")}</p>
         </div>
       </section>
 
-      {/* ───── Company Intro ───── */}
+      {/* Company Intro */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-2 gap-8 md:gap-14 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="order-2 md:order-1"
-          >
+          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="order-2 md:order-1">
             <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">
-              公司简介
+              {t("about.intro_tag")}
             </div>
             <h2 className="text-[#1a2744] text-2xl sm:text-3xl md:text-4xl font-black mb-4 md:mb-6 leading-tight">
-              中国领先的
-              <br />
-              工业铸件制造商
+              {t("about.intro_title").split("\n").map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              {cfg.company_intro || "上海铸造有限公司（SHD Casting Co., Ltd）成立于2004年，总部位于上海市奉贤区工业园区，是一家集铸件研发、设计、生产、机加工及热处理于一体的综合性制造企业。"}
+              {cfgT("company_intro") || "上海铸造有限公司（SHD Casting Co., Ltd）成立于2004年，总部位于上海市奉贤区工业园区，是一家集铸件研发、设计、生产、机加工及热处理于一体的综合性制造企业。"}
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              公司拥有现代化厂房{(cfg.factory_area || "50,000余")}平方米，员工500余人，其中专业技术人员200余人。公司装备有先进的自动化铸造生产线5条，配备三坐标测量机、直读光谱仪、超声波探伤仪等精密检测设备，年产能超过{(cfg.annual_capacity || "50,000")}吨。
+              {cfgT("about_detail") || `公司拥有现代化厂房${cfg.factory_area || "50,000余"}平方米，员工500余人，其中专业技术人员200余人。公司装备有先进的自动化铸造生产线5条，配备三坐标测量机、直读光谱仪、超声波探伤仪等精密检测设备，年产能超过${cfg.annual_capacity || "50,000"}吨。`}
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-5 md:mb-6">
-              经过20年的发展，公司产品远销欧洲、北美、东南亚等{cfg.export_countries || "30余"}个国家和地区，与数十家世界500强企业建立了长期稳定的合作关系。
+              {cfgT("about_export") || `经过20年的发展，公司产品远销欧洲、北美、东南亚等${cfg.export_countries || "30余"}个国家和地区，与数十家世界500强企业建立了长期稳定的合作关系。`}
             </p>
 
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: <Clock className="w-4 h-4" />, label: "成立于2004年", sub: `${cfg.years_experience || "20"}年行业深耕` },
-                { icon: <Users className="w-4 h-4" />, label: `${cfg.clients_count || "500+"}合作客户`, sub: "专业技术团队" },
-                { icon: <Globe className="w-4 h-4" />, label: `${cfg.export_countries || "30+"}出口国家`, sub: "全球化布局" },
-                { icon: <Award className="w-4 h-4" />, label: "6项权威认证", sub: "品质保证体系" },
+                { icon: <Clock className="w-4 h-4" />, label: t("about.founded"), sub: `${cfg.years_experience || "20"}${t("about.deep_experience")}` },
+                { icon: <Users className="w-4 h-4" />, label: `${cfg.clients_count || "500+"}`, sub: t("about.team_label") },
+                { icon: <Globe className="w-4 h-4" />, label: `${cfg.export_countries || "30+"}`, sub: t("about.global_label") },
+                { icon: <Award className="w-4 h-4" />, label: "6", sub: t("about.quality_label") },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-2.5 p-3 sm:p-4 bg-gray-50 rounded-lg">
                   <div className="text-[#f97316] mt-0.5 shrink-0">{item.icon}</div>
@@ -108,45 +111,28 @@ export function AboutPage() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="order-1 md:order-2"
-          >
-            <img
-              src={teamImg}
-              alt="工厂环境"
-              className="w-full h-56 sm:h-72 md:h-[450px] object-cover rounded-xl shadow-xl"
-            />
+          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="order-1 md:order-2">
+            <img src={teamImg} alt="" className="w-full h-56 sm:h-72 md:h-[450px] object-cover rounded-xl shadow-xl" />
           </motion.div>
         </div>
       </section>
 
-      {/* ───── Milestones ───── */}
+      {/* Milestones */}
       <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10 md:mb-14">
             <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">
-              发展历程
+              {t("about.milestones_tag")}
             </div>
-            <h2 className="text-[#1a2744] text-2xl sm:text-3xl md:text-4xl font-black">20年奋斗历程</h2>
+            <h2 className="text-[#1a2744] text-2xl sm:text-3xl md:text-4xl font-black">{t("about.milestones_title")}</h2>
           </div>
 
           {/* Desktop: horizontal timeline */}
           <div className="hidden md:block relative">
             <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-200 z-0" />
             <div className="grid grid-cols-6 gap-6 relative z-10">
-              {milestones.map((m, i) => (
-                <motion.div
-                  key={m.year}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="flex flex-col items-center"
-                >
+              {milestones.map((m: any, i: number) => (
+                <motion.div key={m.year} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }} className="flex flex-col items-center">
                   <div className="w-12 h-12 rounded-full bg-[#1a2744] border-4 border-white shadow-lg flex items-center justify-center mb-4">
                     <span className="text-white text-xs font-black">{m.year.slice(2)}</span>
                   </div>
@@ -164,15 +150,8 @@ export function AboutPage() {
           <div className="md:hidden relative pl-8">
             <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
             <div className="space-y-6">
-              {milestones.map((m, i) => (
-                <motion.div
-                  key={m.year}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  className="relative"
-                >
+              {milestones.map((m: any, i: number) => (
+                <motion.div key={m.year} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.08 }} className="relative">
                   <div className="absolute -left-8 top-0 w-8 h-8 rounded-full bg-[#1a2744] border-2 border-white shadow flex items-center justify-center">
                     <span className="text-white text-xs font-black">{m.year.slice(2)}</span>
                   </div>
@@ -188,25 +167,19 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ───── Team ───── */}
+      {/* Team */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
             <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">
-              管理团队
+              {t("about.team_tag")}
             </div>
-            <h2 className="text-[#1a2744] text-2xl sm:text-3xl md:text-4xl font-black">核心领导团队</h2>
+            <h2 className="text-[#1a2744] text-2xl sm:text-3xl md:text-4xl font-black">{t("about.team_title")}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {team.map((member, i) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="text-center p-5 sm:p-8 bg-gray-50 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-              >
+            {team.map((member: any, i: number) => (
+              <motion.div key={member.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="text-center p-5 sm:p-8 bg-gray-50 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-[#1a2744] mx-auto mb-3 sm:mb-4 flex items-center justify-center">
                   <span className="text-[#f97316] text-xl sm:text-2xl font-black">{member.name[0]}</span>
                 </div>
@@ -219,26 +192,20 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ───── Certifications ───── */}
+      {/* Certifications */}
       <section className="py-12 md:py-20 bg-[#1a2744]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
             <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">
-              资质认证
+              {t("about.certs_tag")}
             </div>
-            <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-black">权威认证</h2>
-            <p className="text-white/60 mt-2 text-sm sm:text-base">多项国际权威认证，为您的选择保驾护航</p>
+            <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-black">{t("about.certs_title")}</h2>
+            <p className="text-white/60 mt-2 text-sm sm:text-base">{t("about.certs_subtitle")}</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {certs.map((cert, i) => (
-              <motion.div
-                key={cert.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="bg-white/5 border border-white/10 hover:border-[#f97316]/50 hover:bg-white/10 rounded-xl p-4 sm:p-5 text-center transition-all"
-              >
+            {certs.map((cert: any, i: number) => (
+              <motion.div key={cert.name} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-white/5 border border-white/10 hover:border-[#f97316]/50 hover:bg-white/10 rounded-xl p-4 sm:p-5 text-center transition-all">
                 <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">{cert.icon}</div>
                 <div className="text-white font-bold text-xs sm:text-sm mb-0.5 sm:mb-1">{cert.name}</div>
                 <div className="text-white/50 text-xs hidden sm:block">{cert.desc}</div>
@@ -248,17 +215,13 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ───── CTA ───── */}
+      {/* CTA */}
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-[#1a2744] text-2xl sm:text-3xl font-black mb-3 md:mb-4">携手合作，共创未来</h2>
-          <p className="text-gray-500 mb-6 md:mb-8 text-sm sm:text-base">我们期待与您建立长期稳定的合作关系</p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 bg-[#f97316] text-white px-7 py-3.5 rounded font-semibold hover:bg-[#ea6c00] transition-all shadow-lg shadow-orange-500/30 text-sm sm:text-base"
-          >
-            立即联系我们
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          <h2 className="text-[#1a2744] text-2xl sm:text-3xl font-black mb-3 md:mb-4">{t("about.cta_title")}</h2>
+          <p className="text-gray-500 mb-6 md:mb-8 text-sm sm:text-base">{t("about.cta_subtitle")}</p>
+          <Link to="/contact" className="inline-flex items-center gap-2 bg-[#f97316] text-white px-7 py-3.5 rounded font-semibold hover:bg-[#ea6c00] transition-all shadow-lg shadow-orange-500/30 text-sm sm:text-base">
+            {t("about.cta_button")} <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
         </div>
       </section>

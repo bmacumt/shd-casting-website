@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
-import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, Mail } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getSiteConfig } from "../utils/api";
 
-const navLinks = [
-  { label: "首页", to: "/" },
-  { label: "产品中心", to: "/products" },
-  { label: "关于我们", to: "/about" },
-  { label: "联系我们", to: "/contact" },
+const LANG_OPTIONS = [
+  { code: "zh", label: "中文" },
+  { code: "en", label: "EN" },
+  { code: "es", label: "ES" },
+  { code: "ru", label: "RU" },
 ];
 
 export function Navbar() {
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [cfg, setCfg] = useState<Record<string, string>>({});
@@ -28,6 +30,19 @@ export function Navbar() {
     setMenuOpen(false);
   }, [location]);
 
+  const changeLang = (code: string) => {
+    i18n.changeLanguage(code);
+    localStorage.setItem('lang', code);
+    document.documentElement.lang = code;
+  };
+
+  const navLinks = [
+    { label: t("nav.home"), to: "/" },
+    { label: t("nav.products"), to: "/products" },
+    { label: t("nav.about"), to: "/about" },
+    { label: t("nav.contact"), to: "/contact" },
+  ];
+
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
@@ -43,6 +58,22 @@ export function Navbar() {
               <Mail className="w-3.5 h-3.5" />
               <span>{cfg.email || "info@shdcasting.com"}</span>
             </a>
+            {/* Language switcher */}
+            <div className="flex items-center gap-0.5 ml-2 border-l border-white/20 pl-4">
+              {LANG_OPTIONS.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => changeLang(l.code)}
+                  className={`px-2 py-0.5 text-xs rounded transition-colors ${
+                    i18n.language === l.code
+                      ? "bg-[#f97316] text-white"
+                      : "text-white/60 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -60,8 +91,8 @@ export function Navbar() {
               <span className="text-[#f97316] font-black text-lg">SHD</span>
             </div>
             <div>
-              <div className="text-[#1a2744] font-black text-xl leading-tight tracking-wide">上海铸造</div>
-              <div className="text-[#f97316] text-xs tracking-widest">SHD CASTING CO.,LTD</div>
+              <div className="text-[#1a2744] font-black text-xl leading-tight tracking-wide">{t("nav.shd_casting")}</div>
+              <div className="text-[#f97316] text-xs tracking-widest">{t("nav.shd_casting_en")}</div>
             </div>
           </NavLink>
 
@@ -87,18 +118,36 @@ export function Navbar() {
               href="/contact"
               className="ml-4 px-5 py-2 bg-[#f97316] text-white text-sm font-medium rounded hover:bg-[#ea6c00] transition-colors"
             >
-              立即询价
+              {t("nav.inquiry")}
             </a>
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            className="md:hidden p-2 text-[#1a2744] hover:text-[#f97316] transition-colors"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile toggle + lang */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* Mobile language switcher */}
+            <div className="flex items-center gap-0.5">
+              {LANG_OPTIONS.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => changeLang(l.code)}
+                  className={`px-1.5 py-0.5 text-xs rounded ${
+                    i18n.language === l.code
+                      ? "bg-[#f97316] text-white"
+                      : "text-[#1a2744] hover:text-[#f97316]"
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+            <button
+              className="p-2 text-[#1a2744] hover:text-[#f97316] transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -123,7 +172,7 @@ export function Navbar() {
                 href="/contact"
                 className="mt-2 px-4 py-3 bg-[#f97316] text-white text-sm font-medium rounded text-center"
               >
-                立即询价
+                {t("nav.inquiry")}
               </a>
             </div>
           </div>

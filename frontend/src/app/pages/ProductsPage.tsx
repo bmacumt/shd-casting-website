@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Search, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getProducts, getCategories } from "../utils/api";
 import type { Product, Category } from "../utils/api";
 
@@ -16,16 +17,9 @@ const fallbackProducts = [
   { id: 6, name: "灰铸铁制动鼓", category: { id: 1, name: "灰铸铁", sort_order: 1, product_count: 0 }, material: "HT250", weight_range: "3-30 kg", standard: "GB/T 9439", cover_image: "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZXRhbCUyMGNhc3RpbmclMjBmb3VuZHJ5JTIwaW5kdXN0cmlhbCUyMGZhY3Rvcnl8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=600", images: [], tag: "热销", is_featured: true, sort_order: 6, created_at: "" },
 ];
 
-const applications = [
-  { icon: "🚗", title: "汽车制造", desc: "发动机零件、制动系统" },
-  { icon: "⚙️", title: "工程机械", desc: "挖掘机、装载机零部件" },
-  { icon: "⚡", title: "电力设备", desc: "发电机组、变压器配件" },
-  { icon: "🏗️", title: "矿山冶金", desc: "矿山机械、冶金设备" },
-  { icon: "🚢", title: "船舶工业", desc: "船用配件、螺旋桨" },
-  { icon: "🌊", title: "泵阀管道", desc: "各类泵体、阀门附件" },
-];
-
 export function ProductsPage() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const [activeCategory, setActiveCategory] = useState(0);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -44,19 +38,36 @@ export function ProductsPage() {
       .catch(() => setProducts(fallbackProducts));
   }, [activeCategory, search]);
 
+  const localizedName = (item: { name: string; name_en?: string; name_es?: string; name_ru?: string }) => {
+    if (lang !== 'zh') {
+      const key = `name_${lang}` as keyof typeof item;
+      if (item[key]) return item[key] as string;
+    }
+    return item.name;
+  };
+
+  const applications = [
+    { icon: "🚗", title: t("home.app_auto"), desc: t("home.app_auto_desc") },
+    { icon: "⚙️", title: t("home.app_engineering"), desc: t("home.app_engineering_desc") },
+    { icon: "⚡", title: t("home.app_power"), desc: t("home.app_power_desc") },
+    { icon: "🏗️", title: t("home.app_mining"), desc: t("home.app_mining_desc") },
+    { icon: "🚢", title: t("home.app_ship"), desc: t("home.app_ship_desc") },
+    { icon: "🌊", title: t("home.app_pump"), desc: t("home.app_pump_desc") },
+  ];
+
   return (
     <div>
       <section className="relative h-44 sm:h-56 md:h-64 flex items-center">
-        <img src={heroImg} alt="产品中心" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroImg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-[#0d1b35]/78" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="flex items-center gap-2 text-white/60 text-xs sm:text-sm mb-2 sm:mb-3">
-            <Link to="/" className="hover:text-[#f97316] transition-colors">首页</Link>
+            <Link to="/" className="hover:text-[#f97316] transition-colors">{t("nav.home")}</Link>
             <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-white">产品中心</span>
+            <span className="text-white">{t("nav.products")}</span>
           </div>
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-black">产品中心</h1>
-          <p className="text-white/70 mt-1 sm:mt-2 text-sm sm:text-base">专业铸件产品，覆盖多种材质与工艺</p>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-black">{t("products.title")}</h1>
+          <p className="text-white/70 mt-1 sm:mt-2 text-sm sm:text-base">{t("products.subtitle")}</p>
         </div>
       </section>
 
@@ -66,24 +77,20 @@ export function ProductsPage() {
             <button
               onClick={() => setActiveCategory(0)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
-                activeCategory === 0
-                  ? "bg-[#f97316] text-white shadow-md shadow-orange-200"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                activeCategory === 0 ? "bg-[#f97316] text-white shadow-md shadow-orange-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              全部产品
+              {t("products.all_products")}
             </button>
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap shrink-0 ${
-                  activeCategory === cat.id
-                    ? "bg-[#f97316] text-white shadow-md shadow-orange-200"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  activeCategory === cat.id ? "bg-[#f97316] text-white shadow-md shadow-orange-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                {cat.name}
+                {localizedName(cat)}
               </button>
             ))}
           </div>
@@ -94,7 +101,7 @@ export function ProductsPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="搜索产品名称或材质…"
+              placeholder={t("products.search_placeholder")}
               className="w-full pl-9 pr-8 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/30 focus:border-[#f97316]"
             />
             {search && (
@@ -116,40 +123,31 @@ export function ProductsPage() {
                 className="group bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="relative h-48 sm:h-52 overflow-hidden">
-                  <img
-                    src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=600"}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=600"} alt={localizedName(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   {product.tag && (
-                    <span className="absolute top-3 left-3 bg-[#f97316] text-white text-xs px-2.5 py-1 rounded-full font-medium">
-                      {product.tag}
-                    </span>
+                    <span className="absolute top-3 left-3 bg-[#f97316] text-white text-xs px-2.5 py-1 rounded-full font-medium">{product.tag}</span>
                   )}
                 </div>
                 <div className="p-4 sm:p-5">
-                  <div className="text-xs text-[#f97316] font-medium mb-1">{product.category?.name || ""}</div>
-                  <h3 className="text-[#1a2744] font-bold text-base mb-3">{product.name}</h3>
+                  <div className="text-xs text-[#f97316] font-medium mb-1">{product.category ? localizedName(product.category) : ""}</div>
+                  <h3 className="text-[#1a2744] font-bold text-base mb-3">{localizedName(product)}</h3>
                   <div className="space-y-1.5 text-sm text-gray-500 mb-4">
                     <div className="flex justify-between gap-2">
-                      <span className="text-gray-400 shrink-0">材质规格</span>
+                      <span className="text-gray-400 shrink-0">{t("products.material")}</span>
                       <span className="text-gray-700 font-medium text-right">{product.material || "-"}</span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="text-gray-400 shrink-0">重量范围</span>
+                      <span className="text-gray-400 shrink-0">{t("products.weight")}</span>
                       <span className="text-gray-700 font-medium">{product.weight_range || "-"}</span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="text-gray-400 shrink-0">执行标准</span>
+                      <span className="text-gray-400 shrink-0">{t("products.standard")}</span>
                       <span className="text-gray-700 font-medium">{product.standard || "-"}</span>
                     </div>
                   </div>
-                  <Link
-                    to="/contact"
-                    className="w-full text-center block py-2.5 bg-[#1a2744] text-white text-sm rounded font-medium hover:bg-[#f97316] transition-colors"
-                  >
-                    立即询价
+                  <Link to="/contact" className="w-full text-center block py-2.5 bg-[#1a2744] text-white text-sm rounded font-medium hover:bg-[#f97316] transition-colors">
+                    {t("products.inquiry_now")}
                   </Link>
                 </div>
               </motion.div>
@@ -157,22 +155,19 @@ export function ProductsPage() {
           </div>
         ) : (
           <div className="text-center py-16 sm:py-20 text-gray-400">
-            <p className="text-base sm:text-lg">未找到相关产品</p>
-            <p className="text-sm mt-1">请尝试其他关键词或分类</p>
+            <p className="text-base sm:text-lg">{t("products.no_results")}</p>
+            <p className="text-sm mt-1">{t("products.no_results_hint")}</p>
           </div>
         )}
 
         <div className="border-t border-gray-100 pt-10 md:pt-14">
           <div className="text-center mb-7 md:mb-10">
-            <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">应用领域</div>
-            <h2 className="text-[#1a2744] text-2xl sm:text-3xl font-black">服务行业</h2>
+            <div className="text-[#f97316] text-xs sm:text-sm font-semibold tracking-widest uppercase mb-2">{t("products.applications_tag")}</div>
+            <h2 className="text-[#1a2744] text-2xl sm:text-3xl font-black">{t("products.applications_title")}</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {applications.map((app) => (
-              <div
-                key={app.title}
-                className="text-center p-4 sm:p-5 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-[#f97316]/30 border border-transparent transition-all"
-              >
+              <div key={app.title} className="text-center p-4 sm:p-5 bg-gray-50 rounded-xl hover:bg-orange-50 hover:border-[#f97316]/30 border border-transparent transition-all">
                 <div className="text-2xl sm:text-3xl mb-1.5 sm:mb-2">{app.icon}</div>
                 <div className="text-[#1a2744] font-bold text-sm mb-0.5 sm:mb-1">{app.title}</div>
                 <div className="text-gray-400 text-xs leading-relaxed hidden sm:block">{app.desc}</div>

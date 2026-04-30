@@ -155,6 +155,9 @@ export async function adminUploadImage(file: File): Promise<{ url: string; filen
 export interface Category {
   id: number;
   name: string;
+  name_en?: string;
+  name_es?: string;
+  name_ru?: string;
   sort_order: number;
   product_count: number;
 }
@@ -162,6 +165,9 @@ export interface Category {
 export interface Product {
   id: number;
   name: string;
+  name_en?: string;
+  name_es?: string;
+  name_ru?: string;
   category?: Category;
   category_id?: number;
   material?: string;

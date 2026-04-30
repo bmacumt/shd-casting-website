@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import { Phone, Mail, MapPin, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getSiteConfig } from "../utils/api";
 
 export function Footer() {
+  const { t, i18n } = useTranslation();
   const [cfg, setCfg] = useState<Record<string, string>>({});
+  const lang = i18n.language;
 
   useEffect(() => {
     getSiteConfig().then(setCfg).catch(() => {});
   }, []);
+
+  const cfgT = (key: string) => {
+    if (lang !== 'zh') {
+      const v = cfg[`${key}_${lang}`];
+      if (v) return v;
+    }
+    return cfg[key] || '';
+  };
 
   return (
     <footer className="bg-[#0d1b35] text-white">
@@ -25,15 +36,19 @@ export function Footer() {
             </div>
           </div>
           <p className="text-white/60 text-sm leading-relaxed mb-4">
-            {cfg.company_intro || "专注于高精度铸件制造20余年，为全球客户提供优质的铸铁、铸钢及铝合金铸件解决方案。"}
+            {cfgT("company_intro") || "专注于高精度铸件制造20余年，为全球客户提供优质的铸铁、铸钢及铝合金铸件解决方案。"}
           </p>
           <div className="flex gap-2">
-            {["微信", "微博", "领英"].map((s) => (
+            {[
+              { label: t("footer.social_wechat"), initial: "微" },
+              { label: t("footer.social_weibo"), initial: "博" },
+              { label: t("footer.social_linkedin"), initial: "in" },
+            ].map((s) => (
               <button
-                key={s}
+                key={s.label}
                 className="w-9 h-9 rounded bg-white/10 hover:bg-[#f97316] text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center"
               >
-                {s[0]}
+                {s.initial}
               </button>
             ))}
           </div>
@@ -42,15 +57,15 @@ export function Footer() {
         {/* Quick links */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
-            快速导航
+            {t("footer.quick_links")}
           </h4>
           <ul className="space-y-2">
             {[
-              { label: "公司首页", to: "/" },
-              { label: "产品中心", to: "/products" },
-              { label: "关于我们", to: "/about" },
-              { label: "联系我们", to: "/contact" },
-              { label: "资质认证", to: "/about" },
+              { label: t("footer.company_home"), to: "/" },
+              { label: t("nav.products"), to: "/products" },
+              { label: t("nav.about"), to: "/about" },
+              { label: t("nav.contact"), to: "/contact" },
+              { label: t("footer.certification"), to: "/about" },
             ].map((item) => (
               <li key={item.label}>
                 <NavLink
@@ -68,10 +83,17 @@ export function Footer() {
         {/* Products */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
-            产品系列
+            {t("footer.product_series")}
           </h4>
           <ul className="space-y-2">
-            {["灰铸铁件", "球墨铸铁件", "铸钢件", "铝合金铸件", "精密铸造件", "大型铸件"].map((p) => (
+            {[
+              t("footer.cast_iron"),
+              t("footer.ductile_iron"),
+              t("footer.steel_casting"),
+              t("footer.aluminum_casting"),
+              t("footer.investment_casting"),
+              t("footer.heavy_casting"),
+            ].map((p) => (
               <li key={p}>
                 <NavLink
                   to="/products"
@@ -88,12 +110,12 @@ export function Footer() {
         {/* Contact */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
-            联系方式
+            {t("footer.contact_info")}
           </h4>
           <ul className="space-y-3">
             <li className="flex gap-3 text-sm text-white/60">
               <MapPin className="w-4 h-4 text-[#f97316] mt-0.5 shrink-0" />
-              <span>{cfg.address || "上海市奉贤区工业园区铸造路88号"}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
+              <span>{cfgT("address") || cfg.address || "上海市奉贤区工业园区铸造路88号"}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
             </li>
             <li>
               <a
@@ -124,8 +146,8 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
-          <span>© 2024 {cfg.company_name || "上海铸造有限公司"} 版权所有</span>
-          <span>沪ICP备XXXXXXXX号 | 技术支持：XX科技</span>
+          <span>© 2024 {cfg.company_name || "上海铸造有限公司"} {t("footer.copyright")}</span>
+          <span>{t("footer.icp")}</span>
         </div>
       </div>
     </footer>
