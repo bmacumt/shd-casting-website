@@ -56,7 +56,7 @@ export function ContactPage() {
     {
       icon: <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />,
       title: t("contact.address_title"),
-      lines: [cfgT("address") || cfg.address || "上海市奉贤区工业园区铸造路88号", cfg.zipcode ? `${t("contact.zipcode_prefix")}${cfg.zipcode}` : `${t("contact.zipcode_prefix")}201499`],
+      lines: [cfgT("address") || cfg.address || t("contact.map_area"), cfg.zipcode ? `${t("contact.zipcode_prefix")}${cfg.zipcode}` : `${t("contact.zipcode_prefix")}201499`],
     },
     {
       icon: <Phone className="w-5 h-5 sm:w-6 sm:h-6" />,
@@ -100,7 +100,7 @@ export function ContactPage() {
       });
       setSubmitted(true);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "提交失败，请稍后重试";
+      const msg = err instanceof Error ? err.message : t("home.submit_error");
       alert(msg);
     } finally {
       setLoading(false);

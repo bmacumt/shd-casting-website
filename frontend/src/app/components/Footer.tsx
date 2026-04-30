@@ -16,12 +16,12 @@ export function Footer() {
               <span className="text-white font-black text-sm">SHD</span>
             </div>
             <div>
-              <div className="text-white font-bold text-base leading-tight">{cfg.company_name || "上海铸造有限公司"}</div>
+              <div className="text-white font-bold text-base leading-tight">{cfgT("company_name") || cfg.company_name || t("nav.shd_casting")}</div>
               <div className="text-white/50 text-xs">{cfg.company_name_en || "SHD CASTING CO., LTD"}</div>
             </div>
           </div>
           <p className="text-white/60 text-sm leading-relaxed mb-4">
-            {cfgT("company_intro") || "专注于高精度铸件制造20余年，为全球客户提供优质的铸铁、铸钢及铝合金铸件解决方案。"}
+            {cfgT("company_intro") || t("home.about_desc")}
           </p>
           <div className="flex gap-2">
             {[
@@ -97,7 +97,7 @@ export function Footer() {
           <ul className="space-y-3">
             <li className="flex gap-3 text-sm text-white/60">
               <MapPin className="w-4 h-4 text-[#f97316] mt-0.5 shrink-0" />
-              <span>{cfgT("address") || cfg.address || "上海市奉贤区工业园区铸造路88号"}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
+              <span>{cfgT("address") || cfg.address || t("contact.map_area")}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
             </li>
             <li>
               <a href={`tel:${cfg.phone || "+862112345678"}`} className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors">
@@ -121,7 +121,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
-          <span>© 2024 {cfg.company_name || "上海铸造有限公司"} {t("footer.copyright")}</span>
+          <span>© 2024 {cfgT("company_name") || cfg.company_name || t("nav.shd_casting")} {t("footer.copyright")}</span>
           <span>{t("footer.icp")}</span>
         </div>
       </div>

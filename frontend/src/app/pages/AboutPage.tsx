@@ -73,13 +73,13 @@ export function AboutPage() {
               ))}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              {cfgT("company_intro") || "上海铸造有限公司（SHD Casting Co., Ltd）成立于2004年，总部位于上海市奉贤区工业园区，是一家集铸件研发、设计、生产、机加工及热处理于一体的综合性制造企业。"}
+              {cfgT("company_intro") || t("home.about_desc")}
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 md:mb-4">
-              {cfgT("about_detail") || `公司拥有现代化厂房${cfg.factory_area || "50,000余"}平方米，员工500余人，其中专业技术人员200余人。公司装备有先进的自动化铸造生产线5条，配备三坐标测量机、直读光谱仪、超声波探伤仪等精密检测设备，年产能超过${cfg.annual_capacity || "50,000"}吨。`}
+              {t("home.about_desc2")}
             </p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-5 md:mb-6">
-              {cfgT("about_export") || `经过20年的发展，公司产品远销欧洲、北美、东南亚等${cfg.export_countries || "30余"}个国家和地区，与数十家世界500强企业建立了长期稳定的合作关系。`}
+              {t("home.about_desc2")}
             </p>
 
             <div className="grid grid-cols-2 gap-3">

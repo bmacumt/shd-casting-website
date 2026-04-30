@@ -80,7 +80,7 @@ export function HomePage() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-[#f97316]/20 border border-[#f97316]/40 text-[#f97316] text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full mb-5">
               <span className="w-2 h-2 rounded-full bg-[#f97316] animate-pulse shrink-0" />
-              {cfgT("hero_tag") || "专业铸件制造商 · 20年品质保障"}
+              {cfgT("hero_tag") || t("home.hero_tag")}
             </div>
 
             <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-4">
@@ -108,10 +108,10 @@ export function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 bg-[#0d1b35]/85 backdrop-blur-sm hidden md:block">
           <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-4 divide-x divide-white/10">
             {[
-              { value: cfg.stat_years || "20+", label: cfgT("stat_years_label") || t("home.factory_staff_label").replace("专业技术人员", "年行业经验") },
-              { value: cfg.stat_clients || "5,000+", label: cfgT("stat_clients_label") || "合作客户" },
-              { value: cfg.stat_countries || "30+", label: cfgT("stat_countries_label") || "出口国家" },
-              { value: cfg.stat_cert || "ISO9001", label: cfgT("stat_cert_label") || "质量认证" },
+              { value: cfg.stat_years || "20+", label: cfgT("stat_years_label") || t("home.stat_years_label") },
+              { value: cfg.stat_clients || "5,000+", label: cfgT("stat_clients_label") || t("home.stat_clients_label") },
+              { value: cfg.stat_countries || "30+", label: cfgT("stat_countries_label") || t("home.stat_countries_label") },
+              { value: cfg.stat_cert || "ISO9001", label: cfgT("stat_cert_label") || t("home.stat_cert_label") },
             ].map((s, i) => (
               <div key={i} className="flex items-center gap-4 px-6 first:pl-0">
                 <div className="text-[#f97316]">{statIcons[i]}</div>
@@ -128,10 +128,10 @@ export function HomePage() {
       {/* Stats — mobile */}
       <div className="md:hidden bg-[#1a2744] grid grid-cols-2 divide-x divide-y divide-white/10">
         {[
-          { value: cfg.stat_years || "20+", label: cfgT("stat_years_label") || "年行业经验" },
-          { value: cfg.stat_clients || "5,000+", label: cfgT("stat_clients_label") || "合作客户" },
-          { value: cfg.stat_countries || "30+", label: cfgT("stat_countries_label") || "出口国家" },
-          { value: cfg.stat_cert || "ISO9001", label: cfgT("stat_cert_label") || "质量认证" },
+          { value: cfg.stat_years || "20+", label: cfgT("stat_years_label") || t("home.stat_years_label") },
+          { value: cfg.stat_clients || "5,000+", label: cfgT("stat_clients_label") || t("home.stat_clients_label") },
+          { value: cfg.stat_countries || "30+", label: cfgT("stat_countries_label") || t("home.stat_countries_label") },
+          { value: cfg.stat_cert || "ISO9001", label: cfgT("stat_cert_label") || t("home.stat_cert_label") },
         ].map((s, i) => (
           <div key={i} className="flex items-center gap-3 p-4">
             <div className="text-[#f97316]">{statIcons[i]}</div>
@@ -150,7 +150,7 @@ export function HomePage() {
             <img src={aboutImg} alt="" className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-lg shadow-xl" />
             <div className="absolute bottom-0 right-0 md:-bottom-5 md:-right-5 bg-[#f97316] text-white p-4 rounded-lg shadow-lg">
               <div className="text-2xl md:text-3xl font-black">20+</div>
-              <div className="text-xs md:text-sm">{cfgT("deep_experience") || "年专业铸造"}</div>
+              <div className="text-xs md:text-sm">{cfgT("deep_experience") || t("home.deep_experience")}</div>
             </div>
           </motion.div>
 
@@ -171,10 +171,10 @@ export function HomePage() {
             </p>
             <ul className="space-y-2 mb-6">
               {[
-                t("home.check_1", { defaultValue: "通过ISO 9001:2015国际质量管理体系认证" }),
-                t("home.check_2", { defaultValue: "拥有完整的铸造、机加工、热处理生产线" }),
-                t("home.check_3", { defaultValue: "专业的研发团队，可提供定制化设计服务" }),
-                t("home.check_4", { defaultValue: "严格的出厂检验，确保100%合格率" }),
+                t("home.check_1"),
+                t("home.check_2"),
+                t("home.check_3"),
+                t("home.check_4"),
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#f97316] shrink-0 mt-0.5" />
@@ -241,7 +241,7 @@ export function HomePage() {
             {t("home.factory_title")}
           </h2>
           <p className="text-white/70 text-sm sm:text-base max-w-2xl mx-auto mb-7 md:mb-8">
-            {cfgT("factory_desc") || "总面积50,000平方米，拥有多条自动化铸造生产线，配备先进三坐标检测仪、光谱分析仪等精密检测设备。"}
+            {cfgT("factory_desc") || t("home.factory_desc")}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 max-w-3xl mx-auto">
             {[
