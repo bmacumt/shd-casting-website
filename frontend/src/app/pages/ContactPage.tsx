@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
-import { submitInquiry, getSiteConfig } from "../utils/api";
+import { useState } from "react";
+import { submitInquiry } from "../utils/api";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Phone, Mail, MapPin, Clock, Send, CheckCircle, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 const heroImg = "https://images.unsplash.com/photo-1682834187151-682c7420e88b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdGVlbCUyMGNhc3RpbmclMjBtb2x0ZW4lMjBtZXRhbCUyMG1hbnVmYWN0dXJpbmd8ZW58MXx8fHwxNzc3NDcxNTU5fDA&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -33,22 +34,11 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export function ContactPage() {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language;
-  const [cfg, setCfg] = useState<Record<string, string>>({});
+  const { t } = useTranslation();
+  const { cfg, t: cfgT } = useSiteConfig();
   const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", product: "", quantity: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => { getSiteConfig().then(setCfg).catch(() => {}); }, []);
-
-  const cfgT = (key: string) => {
-    if (lang !== 'zh') {
-      const v = cfg[`${key}_${lang}`];
-      if (v) return v;
-    }
-    return cfg[key] || '';
-  };
 
   const faqs = cfg.faqs ? JSON.parse(cfg.faqs) : defaultFaqs;
 

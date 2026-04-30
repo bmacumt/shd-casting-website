@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { getSiteConfig } from "./api";
 
@@ -9,13 +9,13 @@ export function useSiteConfig() {
 
   useEffect(() => { getSiteConfig().then(setCfg).catch(() => {}); }, []);
 
-  const t = (key: string) => {
+  const t = useMemo(() => (key: string) => {
     if (lang !== 'zh') {
       const v = cfg[`${key}_${lang}`];
       if (v) return v;
     }
     return cfg[key] || '';
-  };
+  }, [cfg, lang]);
 
   return { cfg, t, lang };
 }

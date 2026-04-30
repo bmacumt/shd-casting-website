@@ -5,6 +5,7 @@ import { ChevronRight, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getProducts, getCategories } from "../utils/api";
 import type { Product, Category } from "../utils/api";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 const heroImg = "https://images.unsplash.com/photo-1767739791246-9f832345f8f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwbWV0YWwlMjBwYXJ0cyUyMG1hY2hpbmVyeSUyMGVxdWlwbWVudHxlbnwxfHx8fDE3Nzc0NzE1NTl8MA&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -18,8 +19,8 @@ const fallbackProducts = [
 ];
 
 export function ProductsPage() {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language;
+  const { t } = useTranslation();
+  const { lang } = useSiteConfig();
   const [activeCategory, setActiveCategory] = useState(0);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);

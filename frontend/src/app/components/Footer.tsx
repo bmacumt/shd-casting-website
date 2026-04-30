@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
 import { NavLink } from "react-router";
 import { Phone, Mail, MapPin, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getSiteConfig } from "../utils/api";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 export function Footer() {
-  const { t, i18n } = useTranslation();
-  const [cfg, setCfg] = useState<Record<string, string>>({});
-  const lang = i18n.language;
-
-  useEffect(() => {
-    getSiteConfig().then(setCfg).catch(() => {});
-  }, []);
-
-  const cfgT = (key: string) => {
-    if (lang !== 'zh') {
-      const v = cfg[`${key}_${lang}`];
-      if (v) return v;
-    }
-    return cfg[key] || '';
-  };
+  const { t } = useTranslation();
+  const { cfg, t: cfgT } = useSiteConfig();
 
   return (
     <footer className="bg-[#0d1b35] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
-        {/* Brand */}
         <div className="sm:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-[#f97316] rounded flex items-center justify-center shrink-0">
@@ -54,7 +39,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Quick links */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
             {t("footer.quick_links")}
@@ -80,7 +64,6 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Products */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
             {t("footer.product_series")}
@@ -107,7 +90,6 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Contact */}
         <div>
           <h4 className="text-white font-semibold mb-4 pb-2 border-b border-white/10 text-sm">
             {t("footer.contact_info")}
@@ -118,19 +100,13 @@ export function Footer() {
               <span>{cfgT("address") || cfg.address || "上海市奉贤区工业园区铸造路88号"}{cfg.zipcode && ` (${cfg.zipcode})`}</span>
             </li>
             <li>
-              <a
-                href={`tel:${cfg.phone || "+862112345678"}`}
-                className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors"
-              >
+              <a href={`tel:${cfg.phone || "+862112345678"}`} className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors">
                 <Phone className="w-4 h-4 text-[#f97316] shrink-0" />
                 <span>{cfg.phone || "+86 21 1234 5678"}</span>
               </a>
             </li>
             <li>
-              <a
-                href={`mailto:${cfg.email || "info@shdcasting.com"}`}
-                className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors"
-              >
+              <a href={`mailto:${cfg.email || "info@shdcasting.com"}`} className="flex gap-3 text-sm text-white/60 hover:text-[#f97316] transition-colors">
                 <Mail className="w-4 h-4 text-[#f97316] shrink-0" />
                 <span>{cfg.email || "info@shdcasting.com"}</span>
               </a>
@@ -143,7 +119,6 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
           <span>© 2024 {cfg.company_name || "上海铸造有限公司"} {t("footer.copyright")}</span>

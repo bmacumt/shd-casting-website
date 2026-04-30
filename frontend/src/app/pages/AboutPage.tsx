@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ChevronRight, Award, Users, Globe, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getSiteConfig } from "../utils/api";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 const heroImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYWN0b3J5JTIwcHJvZHVjdGlvbiUyMGxpbmUlMjBtYW51ZmFjdHVyaW5nJTIwcGxhbnR8ZW58MXx8fHwxNzc3NDcxNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080";
 const teamImg = "https://images.unsplash.com/photo-1748640857973-93524ef0fe7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVjaXNpb24lMjBlbmdpbmVlcmluZyUyMHdvcmtzaG9wJTIwQ05DJTIwbWFjaGluaW5nfGVufDF8fHx8MTc3NzQ3MTU2MHww&ixlib=rb-4.1.0&q=80&w=1080";
@@ -34,21 +33,8 @@ const defaultCerts = [
 ];
 
 export function AboutPage() {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.language;
-  const [cfg, setCfg] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    getSiteConfig().then(setCfg).catch(() => {});
-  }, []);
-
-  const cfgT = (key: string) => {
-    if (lang !== 'zh') {
-      const v = cfg[`${key}_${lang}`];
-      if (v) return v;
-    }
-    return cfg[key] || '';
-  };
+  const { t } = useTranslation();
+  const { cfg, t: cfgT } = useSiteConfig();
 
   const milestones = cfg.milestones ? JSON.parse(cfg.milestones) : defaultMilestones;
   const team = cfg.team ? JSON.parse(cfg.team) : defaultTeam;

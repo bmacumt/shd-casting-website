@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import { Menu, X, Phone, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getSiteConfig } from "../utils/api";
+import { useSiteConfig } from "../utils/useSiteConfig";
 
 const LANG_OPTIONS = [
   { code: "zh", label: "中文" },
@@ -13,12 +13,10 @@ const LANG_OPTIONS = [
 
 export function Navbar() {
   const { t, i18n } = useTranslation();
+  const { cfg } = useSiteConfig();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [cfg, setCfg] = useState<Record<string, string>>({});
   const location = useLocation();
-
-  useEffect(() => { getSiteConfig().then(setCfg).catch(() => {}); }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
