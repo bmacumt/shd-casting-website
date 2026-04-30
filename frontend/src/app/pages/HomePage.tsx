@@ -24,49 +24,35 @@ const factoryImg = "https://images.unsplash.com/photo-1764185800646-f75f7e16e465
 
 const statIcons = [<Clock className="w-6 h-6 md:w-7 md:h-7" />, <Users className="w-6 h-6 md:w-7 md:h-7" />, <Globe className="w-6 h-6 md:w-7 md:h-7" />, <Award className="w-6 h-6 md:w-7 md:h-7" />];
 
-const advantages = [
-  {
-    icon: <Shield className="w-7 h-7" />,
-    title_key: "adv_1_title",
-    desc_key: "adv_1_desc",
-  },
-  {
-    icon: <Wrench className="w-7 h-7" />,
-    title_key: "adv_2_title",
-    desc_key: "adv_2_desc",
-  },
-  {
-    icon: <TrendingUp className="w-7 h-7" />,
-    title_key: "adv_3_title",
-    desc_key: "adv_3_desc",
-  },
-  {
-    icon: <Globe className="w-7 h-7" />,
-    title_key: "adv_4_title",
-    desc_key: "adv_4_desc",
-  },
+const defaultAdvantages = [
+  { title: "严格质量管控", desc: "通过ISO 9001:2015质量管理体系认证，全程追溯每一批次铸件质量。" },
+  { title: "先进生产设备", desc: "引进国内外先进铸造设备，自动化生产线确保产品一致性与精度。" },
+  { title: "快速交货能力", desc: "成熟的供应链管理体系，标准件3-7天，定制件15-30天交货。" },
+  { title: "全球出口经验", desc: "产品畅销欧美、东南亚30余个国家和地区，熟悉国际贸易规则。" },
+];
+const advIcons = [
+  <Shield className="w-7 h-7" />,
+  <Wrench className="w-7 h-7" />,
+  <TrendingUp className="w-7 h-7" />,
+  <Globe className="w-7 h-7" />,
 ];
 
 const defaultCerts = ["ISO 9001:2015", "CE认证", "SGS认证", "BV检验", "TÜV认证"];
 
 export function HomePage() {
   const { t } = useTranslation();
-  const { cfg, t: cfgT } = useSiteConfig();
-  const [featured, setFeatured] = useState<{ title: string; desc: string; icon: string; img: string }[]>([]);
-  const certifications = cfg.certifications ? JSON.parse(cfg.certifications).map((c: any) => c.name) : defaultCerts;
+  const { cfg, t: cfgT, lang } = useSiteConfig();
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const certsJson = cfgT("certifications");
+  const certifications = certsJson ? JSON.parse(certsJson).map((c: any) => c.name) : defaultCerts;
+  const advJson = cfgT("advantages");
+  const advItems = advJson ? JSON.parse(advJson) : defaultAdvantages;
 
   useEffect(() => {
     getFeaturedProducts()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          setFeatured(
-            data.map((p: Product) => ({
-              title: p.name,
-              desc: p.material || "",
-              icon: p.tag === "热销" ? "🔥" : p.tag === "新品" ? "✨" : "⚙️",
-              img: p.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=400",
-            }))
-          );
+          setFeaturedProducts(data);
         }
       })
       .catch(() => {});
@@ -74,6 +60,14 @@ export function HomePage() {
 
   const heroTitle = cfgT("hero_title") || t("home.about_title");
   const heroSubtitle = cfgT("hero_subtitle") || t("home.about_desc");
+
+  const localizedName = (item: { name: string; name_en?: string; name_es?: string; name_ru?: string }) => {
+    if (lang !== 'zh') {
+      const key = `name_${lang}` as keyof typeof item;
+      if (item[key]) return item[key] as string;
+    }
+    return item.name;
+  };
 
   return (
     <div>
@@ -211,17 +205,17 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {featured.map((product, i) => (
-              <motion.div key={product.title + i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
+            {featuredProducts.map((product, i) => (
+              <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="group bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative h-44 sm:h-48 overflow-hidden">
-                  <img src={product.img} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={product.cover_image || "https://images.unsplash.com/photo-1763669029286-7f1662eb921d?w=400"} alt={localizedName(product)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-4 text-2xl">{product.icon}</div>
+                  <div className="absolute bottom-3 left-4 text-2xl">{product.tag === "热销" ? "🔥" : product.tag === "新品" ? "✨" : "⚙️"}</div>
                 </div>
                 <div className="p-4 sm:p-5">
-                  <h3 className="text-[#1a2744] font-bold mb-1.5 sm:mb-2">{product.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-3 sm:mb-4">{product.desc}</p>
+                  <h3 className="text-[#1a2744] font-bold mb-1.5 sm:mb-2">{localizedName(product)}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-3 sm:mb-4">{product.material || ""}</p>
                   <Link to="/products" className="inline-flex items-center gap-1 text-[#f97316] text-sm font-semibold hover:gap-2 transition-all">
                     {t("home.learn_more")} <ChevronRight className="w-4 h-4" />
                   </Link>
@@ -277,15 +271,15 @@ export function HomePage() {
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {advantages.map((adv, i) => (
+            {advItems.map((adv: any, i: number) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="bg-white p-5 sm:p-7 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex sm:block gap-4 items-start">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-orange-50 flex items-center justify-center text-[#f97316] shrink-0 sm:mb-5 group-hover:bg-[#f97316] group-hover:text-white transition-colors">
-                  {adv.icon}
+                  {advIcons[i]}
                 </div>
                 <div>
-                  <h3 className="text-[#1a2744] font-bold mb-1.5">{cfgT(adv.title_key) || t(`home.adv_${i + 1}_title`, { defaultValue: ["严格质量管控", "先进生产设备", "快速交货能力", "全球出口经验"][i] })}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{cfgT(adv.desc_key) || t(`home.adv_${i + 1}_desc`, { defaultValue: ["通过ISO 9001:2015质量管理体系认证，全程追溯每一批次铸件质量。", "引进国内外先进铸造设备，自动化生产线确保产品一致性与精度。", "成熟的供应链管理体系，标准件3-7天，定制件15-30天交货。", "产品畅销欧美、东南亚30余个国家和地区，熟悉国际贸易规则。"][i] })}</p>
+                  <h3 className="text-[#1a2744] font-bold mb-1.5">{adv.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{adv.desc}</p>
                 </div>
               </motion.div>
             ))}

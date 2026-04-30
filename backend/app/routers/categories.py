@@ -27,6 +27,7 @@ def list_categories(db: Session = Depends(get_db)):
     result = [
         CategoryResponse(
             id=c.id, name=c.name, sort_order=c.sort_order,
+            name_en=c.name_en, name_es=c.name_es, name_ru=c.name_ru,
             product_count=count_map.get(c.id, 0),
         ).model_dump()
         for c in categories
@@ -52,6 +53,16 @@ def admin_create_category(body: CategoryCreate, db: Session = Depends(get_db), a
     db.add(cat)
     db.commit()
     db.refresh(cat)
+    try:
+        from app.utils.translator import translate_product
+        translations = translate_product(body.name)
+        if translations:
+            for k, v in translations.items():
+                if k.startswith('name_'):
+                    setattr(cat, k, v)
+            db.commit()
+    except Exception:
+        pass
     return success(data={"id": cat.id}, message="创建成功")
 
 
@@ -67,6 +78,17 @@ def admin_update_category(category_id: int, body: CategoryUpdate, db: Session = 
     if body.sort_order is not None:
         cat.sort_order = body.sort_order
     db.commit()
+    if body.name is not None:
+        try:
+            from app.utils.translator import translate_product
+            translations = translate_product(body.name)
+            if translations:
+                for k, v in translations.items():
+                    if k.startswith('name_'):
+                        setattr(cat, k, v)
+                db.commit()
+        except Exception:
+            pass
     return success(message="更新成功")
 
 

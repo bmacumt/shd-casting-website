@@ -43,12 +43,16 @@ def list_products(
         if p.category:
             cat_data = CategoryResponse(
                 id=p.category.id, name=p.category.name,
+                name_en=p.category.name_en, name_es=p.category.name_es, name_ru=p.category.name_ru,
                 sort_order=p.category.sort_order, product_count=0,
             )
         result.append(ProductListItem(
             id=p.id, name=p.name, category=cat_data,
+            name_en=p.name_en, name_es=p.name_es, name_ru=p.name_ru,
+            description=p.description,
+            description_en=p.description_en, description_es=p.description_es, description_ru=p.description_ru,
             material=p.material, weight_range=p.weight_range,
-            standard=p.standard, description=p.description,
+            standard=p.standard,
             cover_image=p.cover_image, images=p.images,
             tag=p.tag, is_featured=p.is_featured, is_active=p.is_active,
             sort_order=p.sort_order, created_at=p.created_at,
@@ -73,10 +77,12 @@ def list_featured_products(db: Session = Depends(get_db)):
         if p.category:
             cat_data = CategoryResponse(
                 id=p.category.id, name=p.category.name,
+                name_en=p.category.name_en, name_es=p.category.name_es, name_ru=p.category.name_ru,
                 sort_order=p.category.sort_order, product_count=0,
             )
         result.append(ProductFeaturedItem(
             id=p.id, name=p.name, category=cat_data,
+            name_en=p.name_en, name_es=p.name_es, name_ru=p.name_ru,
             material=p.material, weight_range=p.weight_range,
             cover_image=p.cover_image, tag=p.tag,
         ).model_dump())
@@ -109,8 +115,10 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 
     detail = ProductDetail(
         id=product.id, name=product.name, category=cat_data,
+        name_en=product.name_en, name_es=product.name_es, name_ru=product.name_ru,
         material=product.material, weight_range=product.weight_range,
         standard=product.standard, description=product.description,
+        description_en=product.description_en, description_es=product.description_es, description_ru=product.description_ru,
         cover_image=product.cover_image, images=product.images,
         tag=product.tag, is_featured=product.is_featured,
         sort_order=product.sort_order, created_at=product.created_at,

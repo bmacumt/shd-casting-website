@@ -40,7 +40,8 @@ export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const faqs = cfg.faqs ? JSON.parse(cfg.faqs) : defaultFaqs;
+  const faqsJson = cfgT("faqs");
+  const faqs = faqsJson ? JSON.parse(faqsJson) : defaultFaqs;
 
   const productOptions = [
     t("contact.product_cat_cast_iron"),

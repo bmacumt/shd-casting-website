@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field
 class CategoryResponse(BaseModel):
     id: int
     name: str
+    name_en: str | None = None
+    name_es: str | None = None
+    name_ru: str | None = None
     sort_order: int
     product_count: int = 0
 
@@ -15,11 +18,17 @@ class CategoryResponse(BaseModel):
 class ProductListItem(BaseModel):
     id: int
     name: str
+    name_en: str | None = None
+    name_es: str | None = None
+    name_ru: str | None = None
     category: CategoryResponse | None = None
     material: str | None
     weight_range: str | None
     standard: str | None
     description: str | None
+    description_en: str | None = None
+    description_es: str | None = None
+    description_ru: str | None = None
     cover_image: str | None
     images: list[str] | None
     tag: str | None
@@ -38,6 +47,9 @@ class ProductDetail(ProductListItem):
 class ProductFeaturedItem(BaseModel):
     id: int
     name: str
+    name_en: str | None = None
+    name_es: str | None = None
+    name_ru: str | None = None
     category: CategoryResponse | None = None
     material: str | None
     weight_range: str | None

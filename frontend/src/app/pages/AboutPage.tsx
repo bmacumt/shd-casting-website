@@ -36,9 +36,12 @@ export function AboutPage() {
   const { t } = useTranslation();
   const { cfg, t: cfgT } = useSiteConfig();
 
-  const milestones = cfg.milestones ? JSON.parse(cfg.milestones) : defaultMilestones;
-  const team = cfg.team ? JSON.parse(cfg.team) : defaultTeam;
-  const certs = cfg.certifications ? JSON.parse(cfg.certifications) : defaultCerts;
+  const milestonesJson = cfgT("milestones");
+  const milestones = milestonesJson ? JSON.parse(milestonesJson) : defaultMilestones;
+  const teamJson = cfgT("team");
+  const team = teamJson ? JSON.parse(teamJson) : defaultTeam;
+  const certsJson = cfgT("certifications");
+  const certs = certsJson ? JSON.parse(certsJson) : defaultCerts;
 
   return (
     <div>

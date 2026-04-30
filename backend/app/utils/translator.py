@@ -101,3 +101,61 @@ def translate_site_config(config: dict) -> dict[str, str]:
 
     logger.info(f"Auto-translated {len(result)} keys")
     return result
+
+
+def translate_product(name: str, description: str = "") -> dict[str, str]:
+    api_key = get_settings().DEEPSEEK_API_KEY
+    if not api_key:
+        logger.warning("DEEPSEEK_API_KEY not set, skipping product translation")
+        return {}
+
+    client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+
+    content_parts = {"name": name}
+    if description:
+        content_parts["description"] = description
+
+    prompt = f"""Translate the following Chinese product info for a casting company website to English, Spanish, and Russian.
+Return a JSON object with this structure:
+{{"en": {{"name": "...", "description": "..."}}, "es": {{"name": "...", "description": "..."}}, "ru": {{"name": "...", "description": "..."}}}}
+
+--- PRODUCT INFO ---
+{json.dumps(content_parts, ensure_ascii=False, indent=2)}
+
+Return ONLY the JSON object."""
+
+    try:
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": "You are a professional translator. Return only valid JSON."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,
+            response_format={"type": "json_object"},
+        )
+    except Exception as e:
+        logger.error(f"Product translation API call failed: {e}")
+        return {}
+
+    raw = response.choices[0].message.content
+    if not raw:
+        return {}
+
+    try:
+        translations = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+
+    result: dict[str, str] = {}
+    for lang_code in LANGUAGES:
+        lang_data = translations.get(lang_code, {})
+        if not isinstance(lang_data, dict):
+            continue
+        for field in ("name", "description"):
+            val = lang_data.get(field)
+            if isinstance(val, str) and val.strip():
+                result[f"{field}_{lang_code}"] = val
+
+    logger.info(f"Auto-translated product '{name}': {len(result)} fields")
+    return result

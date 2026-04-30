@@ -245,6 +245,18 @@ def admin_create_product(body: ProductCreate, db: Session = Depends(get_db), adm
     db.add(product)
     db.commit()
     db.refresh(product)
+
+    # Auto-translate product name and description
+    try:
+        from app.utils.translator import translate_product
+        translations = translate_product(body.name, body.description or "")
+        if translations:
+            for key, value in translations.items():
+                setattr(product, key, value)
+            db.commit()
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Product auto-translation failed: {e}")
+
     return success(data={"id": product.id}, message="创建成功")
 
 
@@ -259,6 +271,19 @@ def admin_update_product(
     for key, value in body.model_dump(exclude_none=True).items():
         setattr(product, key, value)
     db.commit()
+
+    # Auto-translate if name or description changed
+    if body.name is not None:
+        try:
+            from app.utils.translator import translate_product
+            translations = translate_product(body.name, body.description or product.description or "")
+            if translations:
+                for key, value in translations.items():
+                    setattr(product, key, value)
+                db.commit()
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Product auto-translation failed: {e}")
+
     return success(message="更新成功")
 
 
